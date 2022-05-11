@@ -34,7 +34,7 @@ class _ConfirmPageState extends State<ConfirmPage> {
               style: Theme.of(context).textTheme.headline4,
             ),
             Padding(
-              padding: EdgeInsets.all(30),
+              padding: const EdgeInsets.all(30),
               child: Text(
                 (distanceFactor / widget.duration) > 1.0
                     ? "No fall concerns"

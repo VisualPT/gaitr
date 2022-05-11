@@ -44,7 +44,7 @@ class _VideoPageState extends State<VideoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Preview'),
+        title: const Text('Preview Footage'),
         elevation: 0,
         backgroundColor: Colors.black26,
         actions: [

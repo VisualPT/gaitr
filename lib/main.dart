@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomePage(title: 'Landing Page'),
+      home: const HomePage(title: 'Gait Velocity Detection'),
     );
   }
 }
