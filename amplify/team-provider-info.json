@@ -1,0 +1,20 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-gaiter-staging-220532-authRole",
+      "UnauthRoleArn": "arn:aws:iam::774447013133:role/amplify-gaiter-staging-220532-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::774447013133:role/amplify-gaiter-staging-220532-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-gaiter-staging-220532-deployment",
+      "UnauthRoleName": "amplify-gaiter-staging-220532-unauthRole",
+      "StackName": "amplify-gaiter-staging-220532",
+      "StackId": "arn:aws:cloudformation:us-east-1:774447013133:stack/amplify-gaiter-staging-220532/1a8edcb0-f0e5-11ec-ada9-0a9029818435",
+      "AmplifyAppId": "d2hh5wki5gcwzi"
+    },
+    "categories": {
+      "auth": {
+        "true": {}
+      }
+    }
+  }
+}
