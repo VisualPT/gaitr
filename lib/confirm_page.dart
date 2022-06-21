@@ -42,6 +42,10 @@ class _ConfirmPageState extends State<ConfirmPage> {
                 style: Theme.of(context).textTheme.headline4,
               ),
             ),
+            Text(
+              'Click icon to send to EMR',
+              style: Theme.of(context).textTheme.headline5,
+            ),
           ],
         ),
       ),
