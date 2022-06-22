@@ -15,11 +15,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Gait Velocity Detection Tool',
+      title: 'Gaiter - Gait Velocity Detector',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomePage(title: 'Gait Velocity Detection'),
+      home: const HomePage(title: 'Gaiter - Velocity Detection'),
     );
   }
 }
@@ -44,21 +44,40 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'Welcome to Gaiter',
+              'a two-click tool',
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            Text(
+              'for gait velocity',
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            Text(
+              'detection and logging',
+              style: Theme.of(context).textTheme.headline6,
+            ),
+            Text(
+              'Press icon to begin',
               style: Theme.of(context).textTheme.headline4,
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) {
-            return const CameraPage();
-          }));
-        },
-        tooltip: 'Take Video',
-        child: const Icon(Icons.video_camera_back_rounded),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      bottomNavigationBar: BottomAppBar(
+        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          FloatingActionButton(
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                return const CameraPage();
+              }));
+            },
+            tooltip: 'Take Video',
+            child: const Icon(Icons.video_camera_back_rounded),
+          ),
+        ]),
+        color: Colors.blue,
+      ),
+
+      // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
