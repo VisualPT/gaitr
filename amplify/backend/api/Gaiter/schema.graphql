@@ -1,15 +1,8 @@
-type Todo @model @auth(rules: [{allow: public}]) {
-  id: ID!
-  name: String!
-  description: String
-  isComplete: Boolean!
-}
-
 type Patient @model @auth(rules: [{allow: public}]) {
   id: ID!
-  velocity: String
+  velocity: Float
   age: Int
-  duration: AWSTime
+  duration: Float
   datetime: AWSDateTime
 }
  

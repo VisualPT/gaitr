@@ -1,13 +1,22 @@
 import 'dart:io';
 
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'storageHelper.dart';
+
+import 'models/ModelProvider.dart';
 
 class PreviewPage extends StatefulWidget {
   final String filePath;
   final double duration;
+  final String datetime;
 
-  const PreviewPage({Key? key, required this.filePath, required this.duration})
+  const PreviewPage(
+      {Key? key,
+      required this.filePath,
+      required this.duration,
+      required this.datetime})
       : super(key: key);
 
   @override
@@ -16,7 +25,7 @@ class PreviewPage extends StatefulWidget {
 
 class _PreviewPageState extends State<PreviewPage> {
   late VideoPlayerController _videoPlayerController;
-  var distanceFactor = 10 / 3.281;
+  final distanceFactor = 10 / 3.281;
 
   @override
   void dispose() {
@@ -31,7 +40,19 @@ class _PreviewPageState extends State<PreviewPage> {
     await _videoPlayerController.play();
   }
 
-  void _saveRecording() {}
+  Future<void> _saveData() async {
+    uploadFile(File(widget.filePath));
+    Patient newPatient = Patient(
+        velocity: distanceFactor / widget.duration,
+        age: 10,//TODO get patient info
+        duration: widget.duration,
+        datetime: TemporalDateTime.fromString(widget.datetime));
+    try {
+      await Amplify.DataStore.save(newPatient);
+    } catch (e) {
+      print('An error occurred while saving Todo: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,6 +125,7 @@ class _PreviewPageState extends State<PreviewPage> {
           FloatingActionButton(
             onPressed: () {
               //This is where the data should be sent to the EMR
+              _saveData();
               Navigator.pop(context);
               Navigator.pop(context);
             },

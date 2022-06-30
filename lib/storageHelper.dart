@@ -1,23 +1,25 @@
 import 'package:amplify_flutter/amplify_flutter.dart';
-import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';
 
-Future<void> createAndUploadFile() async {
-  // Create a dummy file
-  final exampleString = 'Example file contents';
-  final tempDir = await getTemporaryDirectory();
-  final exampleFile = File(tempDir.path + '/example.txt')
-    ..createSync()
-    ..writeAsStringSync(exampleString);
+import 'package:video_compress/video_compress.dart';
 
-  // Upload the file to S3
+Future<void> uploadFile(File file) async {
+
+  MediaInfo? mediaInfo = await VideoCompress.compressVideo(
+          file.path,
+          quality: VideoQuality.DefaultQuality,
+          deleteOrigin: false, // It's false by default
+        );
+
+  final options = S3UploadFileOptions(contentType: 'video/mp4');
+
   try {
     final UploadFileResult result = await Amplify.Storage.uploadFile(
-        local: exampleFile,
-        key: 'ExampleKey',
+        local: File(mediaInfo!.path!),
+        key: 'Gait Video', //TODO Make unique
+        options: options,
         onProgress: (progress) {
           print("Fraction completed: " +
               progress.getFractionCompleted().toString());

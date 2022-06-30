@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 
@@ -16,9 +17,9 @@ class _CameraPageState extends State<CameraPage> {
   bool _isLoading = true;
   bool _isRecording = false;
   late CameraController _cameraController;
-
   Duration duration = const Duration(seconds: 0);
   late double finaltime;
+  late String datetime;
   Timer? timer;
 
   @override
@@ -74,7 +75,8 @@ class _CameraPageState extends State<CameraPage> {
         finaltime = duration.inMilliseconds / 1000;
         final route = MaterialPageRoute(
           fullscreenDialog: true,
-          builder: (_) => PreviewPage(filePath: file.path, duration: finaltime),
+          builder: (_) => PreviewPage(
+              filePath: file.path, duration: finaltime, datetime: datetime),
         );
         Navigator.push(context, route);
         resetTimer();
@@ -82,6 +84,7 @@ class _CameraPageState extends State<CameraPage> {
     } else {
       await _cameraController.prepareForVideoRecording();
       await _cameraController.startVideoRecording();
+      datetime = DateTime.now().toDateTimeIso8601String();
       startTimer();
       setState(() {
         _isRecording = true;
@@ -97,7 +100,7 @@ class _CameraPageState extends State<CameraPage> {
       ),
       body: Container(
         child: _isLoading
-            ? 
+            ?
             //Camera has not loaded, prompt user to wait //TODO This should be initiated earlier
             Container(
                 color: Colors.white,
