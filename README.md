@@ -2,6 +2,6 @@
 
 Healthcare tool for detecting and recording patient data and sending it to the EMR.
 
-Current data trackers
+## Current data tracking
 * Manually input information
-* Gait Velocity
+* Gait Velocity (value and video)
