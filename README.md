@@ -1,3 +1,7 @@
 # Gaiter - gait velocity detection
 
-A prototype Flutter project, optimized for iOS. More details might come if the presentation goes well. 🤞 
+Healthcare tool for detecting and recording patient data and sending it to the EMR.
+
+Current data trackers
+* Manually input information
+* Gait Velocity
