@@ -15,15 +15,13 @@ import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 import 'amplifyconfiguration.dart';
 import 'models/ModelProvider.dart';
 
-
 void main() {
   runApp(const MyApp());
 }
 
-//Current: Collect basic user info
+//TODO Collect basic user info
 //TODO Optimize camera startup time
 //TODO Generate PDF
-//TODO Research and follow proper naming and placement conventions
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -49,13 +47,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   final AmplifyDataStore _dataStorePlugin =
       AmplifyDataStore(modelProvider: ModelProvider.instance);
   final AmplifyAPI _apiPlugin = AmplifyAPI();
   final AmplifyAuthCognito _authPlugin = AmplifyAuthCognito();
   final AmplifyStorageS3 _storagePlugin = AmplifyStorageS3();
-  
+  //late StreamSubscription<QuerySnapshot<Todo>> _subscription; FOR LIVE UPDATES
+
   @override
   void initState() {
     _initializeApp();
@@ -73,7 +71,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-   Future<void> _initializeApp() async {
+  Future<void> _initializeApp() async {
     await _configureAmplify();
 
     //FOR LIVE UPDATES
@@ -93,7 +91,6 @@ class _HomePageState extends State<HomePage> {
     });
     */
   }
-
 
   @override
   Widget build(BuildContext context) {
