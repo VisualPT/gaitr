@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-import 'preview_page.dart';
+import 'editor_page.dart';
 
 class CameraPage extends StatefulWidget {
   const CameraPage({Key? key}) : super(key: key);
@@ -24,6 +26,10 @@ class _CameraPageState extends State<CameraPage> {
 
   @override
   void initState() {
+    //TODO  "Requires full screen" to true in the Xcode Deployment Info.
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+    ]);
     _initCameraServices();
     super.initState();
   }
@@ -42,13 +48,9 @@ class _CameraPageState extends State<CameraPage> {
   }
 
   void increment() {
-    const add = 1;
-    setState(() {
-      if (_isRecording) {
-        final milliseconds = duration.inMilliseconds + add;
-        duration = Duration(milliseconds: milliseconds);
-      }
-    });
+    setState(() => _isRecording
+        ? duration = Duration(milliseconds: duration.inMilliseconds + 1)
+        : null);
   }
 
   void resetTimer() {
@@ -62,8 +64,11 @@ class _CameraPageState extends State<CameraPage> {
     _cameraController = CameraController(
         cameras.firstWhere(
             (camera) => camera.lensDirection == CameraLensDirection.back),
-        ResolutionPreset.max);
+        ResolutionPreset.high);
     await _cameraController.initialize();
+    await _cameraController
+        .lockCaptureOrientation(DeviceOrientation.landscapeLeft);
+    await _cameraController.prepareForVideoRecording();
     setState(() => _isLoading = false);
   }
 
@@ -74,17 +79,15 @@ class _CameraPageState extends State<CameraPage> {
         _isRecording = false;
         finaltime = duration.inMilliseconds / 1000;
         final route = MaterialPageRoute(
-          fullscreenDialog: true,
-          builder: (_) => PreviewPage(
-              filePath: file.path, duration: finaltime, datetime: datetime),
-        );
+            fullscreenDialog: true,
+            builder: (_) => EditorPage(file: File(file.path)));
         Navigator.push(context, route);
         resetTimer();
       });
     } else {
-      await _cameraController.prepareForVideoRecording();
-      await _cameraController.startVideoRecording();
-      datetime = DateTime.now().toDateTimeIso8601String();
+      await _cameraController.startVideoRecording().onError(
+          //TODO Check if video is broken and reset the controller if so
+          (error, stackTrace) => null);
       startTimer();
       setState(() {
         _isRecording = true;
@@ -95,92 +98,66 @@ class _CameraPageState extends State<CameraPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text('Collect Video'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          Row(
+            children: [
+              SizedBox(
+                height: MediaQuery.of(context).size.height / 8,
+                width: MediaQuery.of(context).size.width / 8,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Colors.red,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Center(
+                    child: Text(
+                      formatter(duration),
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white.withOpacity(0.8),
+                        fontSize: 30,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
       body: Container(
         child: _isLoading
-            ?
-            //Camera has not loaded, prompt user to wait //TODO This should be initiated earlier
-            Container(
+            ? Container(
                 color: Colors.white,
                 child: const Center(
                   child: CircularProgressIndicator(),
                 ),
               )
-            :
-            //Camera has loaded, display view and guides
-            Stack(
-                alignment: Alignment.bottomCenter,
+            : Stack(
+                alignment: Alignment.centerLeft,
                 children: [
                   FractionallySizedBox(
                       widthFactor: 1, child: CameraPreview(_cameraController)),
-                  const Positioned.fill(
-                    right: 260,
-                    child: VerticalDivider(
-                      width: 10,
-                      thickness: 3,
-                      indent: 10,
-                      endIndent: 120,
-                      color: Colors.green,
-                    ),
-                  ),
-                  const Positioned.fill(
-                    left: 260,
-                    child: VerticalDivider(
-                      width: 10,
-                      thickness: 3,
-                      indent: 10,
-                      endIndent: 120,
-                      color: Colors.red,
-                    ),
-                  ),
-                  const Positioned(
-                      child: Text(
-                        '-------10ft-------',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          fontSize: 30,
-                          decoration: TextDecoration.none,
-                        ), //Gets rid of yellow lines
-                      ),
-                      bottom: 160),
-                  const Positioned.fill(
-                    top: 210,
-                    child: Divider(
-                      height: 10,
-                      thickness: 3,
-                      indent: 60,
-                      endIndent: 60,
-                      color: Colors.orange,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 80),
-                    child: Text(
-                      'Duration: ${(duration.inMilliseconds / 1000).round()} sec',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white.withOpacity(0.8),
-                          fontSize: 30,
-                          decoration:
-                              TextDecoration.none), //Gets rid of yellow lines
+                  GestureDetector(
+                    onTap: () => _recordVideo(),
+                    child: Icon(
+                      _isRecording ? Icons.stop : Icons.circle,
+                      color: _isRecording ? Colors.red : Colors.white,
+                      size: 80,
                     ),
                   ),
                 ],
               ),
       ),
-      bottomNavigationBar: BottomAppBar(
-        child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          FloatingActionButton(
-            backgroundColor: Colors.blue,
-            child: Icon(_isRecording ? Icons.stop : Icons.circle),
-            onPressed: () => _recordVideo(),
-          ),
-        ]),
-        color: Colors.blue,
-      ),
     );
   }
+
+  String formatter(Duration duration) => [
+        duration.inSeconds.remainder(60).toString().padLeft(2, '0'),
+        duration.inMilliseconds.remainder(60).toString().padLeft(2, '0')[0]
+      ].join(".");
 }
