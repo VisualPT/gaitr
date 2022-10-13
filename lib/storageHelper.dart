@@ -1,17 +1,38 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 
-import 'dart:io';
-
 import 'package:video_compress/video_compress.dart';
 
-Future<void> uploadFile(File file) async {
+late Map<String, dynamic> userData = {};
 
+void storeValue(String field, String? value) {
+  try {
+    switch (field) {
+      case "First Name":
+        userData[field] = value;
+        break;
+      case "Last Name":
+        userData[field] = value;
+        break;
+      case "Birth Date":
+        userData[field] = value;
+        break;
+      default:
+        throw Exception("Invalid field or value used");
+    }
+  } catch (e) {
+    log(e.toString());
+  }
+}
+
+Future<void> uploadFile(File file) async {
   MediaInfo? mediaInfo = await VideoCompress.compressVideo(
-          file.path,
-          quality: VideoQuality.DefaultQuality,
-          deleteOrigin: false, // It's false by default
-        );
+    file.path,
+    quality: VideoQuality.DefaultQuality,
+  );
 
   final options = S3UploadFileOptions(contentType: 'video/mp4');
 
