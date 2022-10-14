@@ -19,10 +19,28 @@ void storeValue(String field, String? value) {
         break;
       case "Birth Date":
         userData[field] = value;
+        var birthdate = _birthDateFormatter(userData[field]);
+        var now = DateTime.now();
+        var age = (now.difference(birthdate).inDays / 365).floor();
+        userData["Age"] = age;
+        userData["Now"] = now;
         break;
       default:
         throw Exception("Invalid field or value used");
     }
+  } catch (e) {
+    log(e.toString());
+  }
+}
+
+_birthDateFormatter(String birthdate) {
+  try {
+    final int year = int.parse(birthdate.substring(
+        birthdate.lastIndexOf('/') + 1, birthdate.length - 1));
+    final int month = int.parse(birthdate.substring(
+        birthdate.indexOf('/') + 1, birthdate.lastIndexOf('/')));
+    final int day = int.parse(birthdate.substring(0, birthdate.indexOf('/')));
+    return DateTime(year, month, day);
   } catch (e) {
     log(e.toString());
   }

@@ -3,9 +3,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gaiter/analysis_page.dart';
+import 'package:gaiter/storageHelper.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_editor/video_editor.dart';
 import 'package:helpers/helpers.dart' show OpacityTransition;
+
+//TODO 10m, ft and/or yd for easy toggle measurement
+enum MeasurementUnit { meters, feet, yards }
 
 class EditorPage extends StatefulWidget {
   const EditorPage({Key? key, required this.file}) : super(key: key);
@@ -41,6 +45,14 @@ class _EditorPageState extends State<EditorPage> {
     _playerController.dispose();
     _editorController.dispose();
     super.dispose();
+  }
+
+  void logGait(VideoPlayerController controller,
+      {MeasurementUnit unit = MeasurementUnit.meters}) {
+    final int seconds = controller.value.duration.inSeconds;
+    if (unit.name.contains("meters")) {
+      userData["Gait Velocity"] = 10 / seconds;
+    }
   }
 
   @override
@@ -116,6 +128,7 @@ class _EditorPageState extends State<EditorPage> {
                                     ),
                                   )),
                               onPressed: () {
+                                //TODO Calculate Gait Velocity here
                                 final route = MaterialPageRoute(
                                     fullscreenDialog: true,
                                     builder: (_) => const AnalysisPage());

@@ -42,6 +42,7 @@ dependencies:
   video_compress: ^3.1.0
   video_editor: ^1.4.3
   helpers: ^1.1.4
+  pdf: ^3.8.3
 
 dev_dependencies:
   flutter_test:

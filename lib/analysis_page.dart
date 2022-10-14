@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gaiter/patient_pdf.dart';
 import 'package:helpers/helpers/transition.dart';
 import 'package:video_editor/video_editor.dart';
 import 'package:video_player/video_player.dart';
@@ -70,7 +71,6 @@ class _AnalysisPageState extends State<AnalysisPage> {
           videoController.dispose();
         });
 
-        _exportText = "Video success export!";
         setState(() => _exported = true);
         Future.delayed(const Duration(seconds: 2),
             () => setState(() => _exported = false));
@@ -78,7 +78,7 @@ class _AnalysisPageState extends State<AnalysisPage> {
     );
   }
 
-  //TODO Fix
+  //TODO Hook up with download button
   Widget _customSnackBar() {
     return Align(
       alignment: Alignment.bottomCenter,
@@ -107,8 +107,8 @@ class _AnalysisPageState extends State<AnalysisPage> {
             onPressed: _exportVideo,
             icon: const Icon(Icons.save),
           ),
-          Container(
-              child: ValueListenableBuilder(
+          const PatientPDF(),
+          ValueListenableBuilder(
             valueListenable: _isExporting,
             builder: (_, bool export, __) => OpacityTransition(
               visible: export,
@@ -127,7 +127,7 @@ class _AnalysisPageState extends State<AnalysisPage> {
                 ),
               ),
             ),
-          )),
+          ),
         ],
       ),
     );
