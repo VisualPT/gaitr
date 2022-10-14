@@ -73,52 +73,76 @@ class _EditorPageState extends State<EditorPage> {
       ),
       body: _editorController.initialized
           ? Stack(
-              alignment: Alignment.bottomCenter,
+              alignment: Alignment.center,
               children: [
-                FractionallySizedBox(
-                  widthFactor: 1,
-                  child: GestureDetector(
-                    onTap: () {
-                      if (_playerController.value.isPlaying) {
-                        _editorController.video.pause();
-                      } else {
-                        _editorController.video.play();
-                      }
-                    },
-                    child: VideoPlayer(_playerController),
-                  ),
+                Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: [
+                    FractionallySizedBox(
+                      widthFactor: 1,
+                      child: GestureDetector(
+                        onTap: () {
+                          if (_playerController.value.isPlaying) {
+                            _editorController.video.pause();
+                          } else {
+                            _editorController.video.play();
+                          }
+                        },
+                        child: VideoPlayer(_playerController),
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 20,
+                      child: Row(
+                        children: [
+                          SizedBox(
+                            height: height,
+                            width: MediaQuery.of(context).size.width / 1.4,
+                            child: TrimSlider(
+                              controller: _editorController,
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          ElevatedButton(
+                              child: SizedBox(
+                                  height: height,
+                                  width: MediaQuery.of(context).size.width / 10,
+                                  child: const Center(
+                                    child: Text(
+                                      "Analyze",
+                                      style: TextStyle(fontSize: 20),
+                                    ),
+                                  )),
+                              onPressed: () {
+                                final route = MaterialPageRoute(
+                                    fullscreenDialog: true,
+                                    builder: (_) => const AnalysisPage());
+                                Navigator.push(context, route);
+                              }),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
-                Positioned(
-                  bottom: 20,
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        height: height,
-                        width: MediaQuery.of(context).size.width / 1.4,
-                        child: TrimSlider(
-                          controller: _editorController,
+                AnimatedBuilder(
+                  animation: _playerController,
+                  builder: (_, __) => OpacityTransition(
+                    visible: !_editorController.isPlaying,
+                    child: GestureDetector(
+                      onTap: _editorController.video.play,
+                      child: Container(
+                        width: 40,
+                        height: 40,
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
                         ),
+                        child:
+                            const Icon(Icons.play_arrow, color: Colors.black),
                       ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      ElevatedButton(
-                          child: SizedBox(
-                              height: height,
-                              width: MediaQuery.of(context).size.width / 10,
-                              child: const Center(
-                                child: Text(
-                                  "Analyze",
-                                  style: TextStyle(fontSize: 20),
-                                ),
-                              )),
-                          onPressed: () {
-                            final route = MaterialPageRoute(
-                                fullscreenDialog: true,
-                                builder: (_) => const AnalysisPage());
-                            Navigator.push(context, route);
-                          }),
-                    ],
+                    ),
                   ),
                 ),
               ],
