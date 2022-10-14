@@ -4,7 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gaiter/config.dart';
-import 'package:gaiter/form.dart';
+import 'package:gaiter/patient_form.dart';
 
 void main() {
   runApp(const MyApp());
