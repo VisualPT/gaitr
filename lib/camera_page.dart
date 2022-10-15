@@ -1,12 +1,9 @@
-import 'dart:async';
-import 'dart:io';
-
-import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'editor_page.dart';
+import 'cubit/camera_cubit.dart';
 
 class CameraPage extends StatefulWidget {
   const CameraPage({Key? key}) : super(key: key);
@@ -16,143 +13,109 @@ class CameraPage extends StatefulWidget {
 }
 
 class _CameraPageState extends State<CameraPage> {
-  bool _isLoading = true;
-  bool _isRecording = false;
-  late CameraController _cameraController;
-  Duration duration = const Duration(seconds: 0);
-  late double finaltime;
-  late String datetime;
-  Timer? timer;
-
   @override
   void initState() {
     //TODO  "Requires full screen" to true in the Xcode Deployment Info.
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-    ]);
-    _initCameraServices();
+    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
     super.initState();
   }
 
   @override
-  void dispose() {
-    _cameraController.dispose();
-    super.dispose();
-  }
-
-  void startTimer() {
-    setState(() {
-      timer =
-          Timer.periodic(const Duration(milliseconds: 1), (_) => increment());
-    });
-  }
-
-  void increment() {
-    setState(() => _isRecording
-        ? duration = Duration(milliseconds: duration.inMilliseconds + 1)
-        : null);
-  }
-
-  void resetTimer() {
-    timer?.cancel();
-    duration = const Duration(seconds: 0);
-  }
-
-  _initCameraServices() async {
-    final cameras = await availableCameras();
-
-    _cameraController = CameraController(
-        cameras.firstWhere(
-            (camera) => camera.lensDirection == CameraLensDirection.back),
-        ResolutionPreset.high);
-    await _cameraController.initialize();
-    await _cameraController
-        .lockCaptureOrientation(DeviceOrientation.landscapeLeft);
-    await _cameraController.prepareForVideoRecording();
-    setState(() => _isLoading = false);
-  }
-
-  _recordVideo() async {
-    if (_isRecording) {
-      final file = await _cameraController.stopVideoRecording();
-      setState(() {
-        _isRecording = false;
-        finaltime = duration.inMilliseconds / 1000;
-        final route = MaterialPageRoute(
-            fullscreenDialog: true,
-            builder: (_) => EditorPage(file: File(file.path)));
-        Navigator.push(context, route);
-        resetTimer();
-      });
-    } else {
-      await _cameraController.startVideoRecording().onError(
-          //TODO Check if video is broken and reset the controller if so
-          (error, stackTrace) => null);
-      startTimer();
-      setState(() {
-        _isRecording = true;
-      });
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        actions: [
-          Row(
-            children: [
-              SizedBox(
-                height: MediaQuery.of(context).size.height / 8,
-                width: MediaQuery.of(context).size.width / 8,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Colors.red,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Center(
-                    child: Text(
-                      formatter(duration),
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white.withOpacity(0.8),
-                        fontSize: 30,
-                      ),
-                    ),
+    return BlocProvider(
+      create: (context) => CameraCubit()..initCamera(),
+      child: BlocBuilder<CameraCubit, CameraState>(
+        builder: (context, state) {
+          return Scaffold(
+              extendBodyBehindAppBar: true,
+              appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                actions: state is CameraRecording || state is CameraStandby
+                    ? stopwatchWidget(context, state)
+                    : null,
+              ),
+              body: state is CameraError
+                  ? Center(
+                      child: Text(state.exception.toString()),
+                    )
+                  : cameraWidget(context, state));
+        },
+      ),
+    );
+  }
+
+  List<Widget> stopwatchWidget(BuildContext context, CameraState state) {
+    return [
+      Row(
+        children: [
+          SizedBox(
+            height: MediaQuery.of(context).size.height / 8,
+            width: MediaQuery.of(context).size.width / 8,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: Colors.red,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Center(
+                child: Text(
+                  (() {
+                    if (state is CameraRecording) {
+                      return formatter(state.duration);
+                    } else {
+                      return formatter(const Duration(seconds: 0));
+                    }
+                  }()),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white.withOpacity(0.8),
+                    fontSize: 30,
                   ),
                 ),
               ),
-            ],
+            ),
           ),
         ],
       ),
-      body: Container(
-        child: _isLoading
-            ? Container(
-                color: Colors.white,
-                child: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-              )
-            : Stack(
-                alignment: Alignment.centerLeft,
-                children: [
-                  FractionallySizedBox(
-                      widthFactor: 1, child: CameraPreview(_cameraController)),
-                  GestureDetector(
-                    onTap: () => _recordVideo(),
-                    child: Icon(
-                      _isRecording ? Icons.stop : Icons.circle,
-                      color: _isRecording ? Colors.red : Colors.white,
-                      size: 80,
-                    ),
-                  ),
-                ],
+    ];
+  }
+
+  Widget cameraWidget(BuildContext context, CameraState state) {
+    return Stack(
+      alignment: Alignment.centerLeft,
+      children: (() {
+        if (state is CameraRecording) {
+          return [
+            FractionallySizedBox(
+                widthFactor: 1, child: CameraPreview(state.controller)),
+            GestureDetector(
+              onTap: () => BlocProvider.of<CameraCubit>(context)
+                  .triggerState(context, state),
+              child: const Icon(
+                Icons.stop,
+                color: Colors.red,
+                size: 80,
               ),
-      ),
+            ),
+          ];
+        } else if (state is CameraStandby) {
+          return [
+            FractionallySizedBox(
+                widthFactor: 1, child: CameraPreview(state.controller)),
+            GestureDetector(
+              onTap: () => BlocProvider.of<CameraCubit>(context)
+                  .triggerState(context, state),
+              child: const Icon(
+                Icons.circle,
+                color: Colors.white,
+                size: 80,
+              ),
+            ),
+          ];
+        } else {
+          return [const CircularProgressIndicator()];
+        }
+      }()),
     );
   }
 
