@@ -3,9 +3,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
-import 'package:gaiter/editor_page.dart';
+
+import 'package:camera/camera.dart';
+
+import 'package:gaiter/pages/editor_page.dart';
 
 part 'camera_state.dart';
 
@@ -40,6 +42,7 @@ class CameraCubit extends Cubit<CameraState> {
       await cameraController
           .lockCaptureOrientation(DeviceOrientation.landscapeLeft);
       await cameraController.prepareForVideoRecording();
+
       emit(CameraStandby(controller: cameraController));
     } on Exception catch (e) {
       emit(CameraError(exception: e));
@@ -47,7 +50,6 @@ class CameraCubit extends Cubit<CameraState> {
   }
 
   void triggerState(BuildContext context, CameraState state) async {
-    print("triggered");
     if (state is CameraRecording) {
       XFile file = await state.controller.stopVideoRecording();
       MaterialPageRoute route = MaterialPageRoute(
