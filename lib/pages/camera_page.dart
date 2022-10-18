@@ -2,8 +2,9 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gaiter/config.dart';
 
-import 'cubit/camera_cubit.dart';
+import '../cubit/camera/camera_cubit.dart';
 
 class CameraPage extends StatefulWidget {
   const CameraPage({Key? key}) : super(key: key);
@@ -37,7 +38,16 @@ class _CameraPageState extends State<CameraPage> {
               ),
               body: state is CameraError
                   ? Center(
-                      child: Text(state.exception.toString()),
+                      child: Column(
+                        children: [
+                          Text(state.exception.toString()),
+                          ElevatedButton(
+                              onPressed: () =>
+                                  BlocProvider.of<CameraCubit>(context)
+                                    ..initCamera,
+                              child: const Text("Retry"))
+                        ],
+                      ),
                     )
                   : cameraWidget(context, state));
         },
@@ -113,7 +123,7 @@ class _CameraPageState extends State<CameraPage> {
             ),
           ];
         } else {
-          return [const CircularProgressIndicator()];
+          return [const Center(child: CircularProgressIndicator())];
         }
       }()),
     );

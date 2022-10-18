@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:gaiter/analysis_page.dart';
+import 'package:gaiter/pages/analysis_page.dart';
 import 'package:gaiter/storageHelper.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_editor/video_editor.dart';
@@ -25,8 +25,10 @@ class _EditorPageState extends State<EditorPage> {
   late VideoEditorController _editorController;
   late VideoPlayerController _playerController;
 
+//TODO resolve the reason behind the pause when the video starts playing
   @override
   void initState() {
+    super.initState();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
@@ -35,9 +37,7 @@ class _EditorPageState extends State<EditorPage> {
         maxDuration: const Duration(seconds: 60))
       ..initialize().then((_) => setState(() {}));
     _playerController = _editorController.video;
-    _playerController.play();
     //_controller.video.setLooping(true);
-    super.initState();
   }
 
   @override
@@ -111,6 +111,7 @@ class _EditorPageState extends State<EditorPage> {
                             height: height,
                             width: MediaQuery.of(context).size.width / 1.4,
                             child: TrimSlider(
+                              // height: ,
                               controller: _editorController,
                             ),
                           ),

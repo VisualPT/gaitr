@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gaiter/cubit/pdf/pdf_cubit.dart';
 import 'package:gaiter/patient_pdf.dart';
 import 'package:helpers/helpers/transition.dart';
 import 'package:video_editor/video_editor.dart';
@@ -101,35 +103,63 @@ class _AnalysisPageState extends State<AnalysisPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          IconButton(
-            onPressed: _exportVideo,
-            icon: const Icon(Icons.save),
-          ),
-          const PatientPDF(),
-          ValueListenableBuilder(
-            valueListenable: _isExporting,
-            builder: (_, bool export, __) => OpacityTransition(
-              visible: export,
-              child: AlertDialog(
-                backgroundColor: Colors.white,
-                title: ValueListenableBuilder(
-                  valueListenable: _exportingProgress,
-                  builder: (_, double value, __) => Text(
-                    "Exporting video ${(value * 100).ceil()}%",
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
+        body: SizedBox(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: buildPdf(context)));
+  }
+
+  Widget buildPdf(BuildContext context) {
+    return BlocProvider(
+      create: (context) => PdfCubit()..initPDFView(),
+      child: BlocBuilder<PdfCubit, PdfState>(
+        builder: (context, state) {
+          if (state is PdfLoaded) {
+            return Center(child: state.pdfView);
+          } else if (state is PdfLoading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (state is PdfError) {
+            return Center(
+              child: Text(state.exception.toString()),
+            );
+          } else {
+            return const Center(
+              child: Text("Invalid PDF State"),
+            );
+          }
+        },
       ),
     );
   }
 }
+
+// Column(
+        //children: [
+          // IconButton(
+          //   onPressed: _exportVideo,
+          //   icon: const Icon(Icons.save),
+          // )
+          // ValueListenableBuilder(
+          //   valueListenable: _isExporting,
+          //   builder: (_, bool export, __) => OpacityTransition(
+          //     visible: export,
+          //     child: AlertDialog(
+          //       backgroundColor: Colors.white,
+          //       title: ValueListenableBuilder(
+          //         valueListenable: _exportingProgress,
+          //         builder: (_, double value, __) => Text(
+          //           "Exporting video ${(value * 100).ceil()}%",
+          //           style: const TextStyle(
+          //             color: Colors.black,
+          //             fontWeight: FontWeight.bold,
+          //             fontSize: 14,
+          //           ),
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
+       // ],
+     // ),
