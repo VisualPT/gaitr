@@ -44,6 +44,7 @@ dependencies:
   helpers: ^1.1.4
   pdf: ^3.8.3
   flutter_bloc: ^8.1.1
+  flutter_pdfview: ^1.2.1
 
 dev_dependencies:
   flutter_test:
