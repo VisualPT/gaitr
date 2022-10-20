@@ -110,12 +110,26 @@ class _AnalysisPageState extends State<AnalysisPage> {
   }
 
   Widget buildPdf(BuildContext context) {
-    return BlocProvider(
+    return Scaffold(
+        body: BlocProvider(
       create: (context) => PdfCubit()..initPDFView(),
       child: BlocBuilder<PdfCubit, PdfState>(
         builder: (context, state) {
           if (state is PdfLoaded) {
-            return Center(child: state.pdfView);
+            return Center(
+              child: Column(
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height - 50,
+                    width: MediaQuery.of(context).size.width,
+                    child: state.pdfView,
+                  ), 
+                  ElevatedButton(
+                      onPressed: BlocProvider.of<PdfCubit>(context).initPDFView,
+                      child: const Text("retry"))
+                ],
+              ),
+            );
           } else if (state is PdfLoading) {
             return const Center(
               child: CircularProgressIndicator(),
@@ -131,7 +145,7 @@ class _AnalysisPageState extends State<AnalysisPage> {
           }
         },
       ),
-    );
+    ));
   }
 }
 

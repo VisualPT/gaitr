@@ -8,9 +8,6 @@ import 'package:video_player/video_player.dart';
 import 'package:video_editor/video_editor.dart';
 import 'package:helpers/helpers.dart' show OpacityTransition;
 
-//TODO 10m, ft and/or yd for easy toggle measurement
-enum MeasurementUnit { meters, feet, yards }
-
 class EditorPage extends StatefulWidget {
   const EditorPage({Key? key, required this.file}) : super(key: key);
 
@@ -23,9 +20,8 @@ class EditorPage extends StatefulWidget {
 class _EditorPageState extends State<EditorPage> {
   final double height = 60;
   late VideoEditorController _editorController;
-  late VideoPlayerController _playerController;
+  //late VideoPlayerController _playerController;
 
-//TODO resolve the reason behind the pause when the video starts playing
   @override
   void initState() {
     super.initState();
@@ -36,23 +32,21 @@ class _EditorPageState extends State<EditorPage> {
     _editorController = VideoEditorController.file(widget.file,
         maxDuration: const Duration(seconds: 60))
       ..initialize().then((_) => setState(() {}));
-    _playerController = _editorController.video;
     //_controller.video.setLooping(true);
   }
 
   @override
   void dispose() {
-    _playerController.dispose();
     _editorController.dispose();
     super.dispose();
   }
 
-  void logGait(VideoPlayerController controller,
-      {MeasurementUnit unit = MeasurementUnit.meters}) {
-    final int seconds = controller.value.duration.inSeconds;
-    if (unit.name.contains("meters")) {
-      userData["Gait Velocity"] = 10 / seconds;
-    }
+  void logGaitVelocityStats(VideoPlayerController controller) {
+    final double seconds = controller.value.duration.inMilliseconds / 1000;
+    calculateFallRisk(seconds);
+    print(seconds);
+    userData.velocity = (10 / seconds).toStringAsPrecision(2);
+    print(userData.velocity);
   }
 
   @override
@@ -63,7 +57,7 @@ class _EditorPageState extends State<EditorPage> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: AnimatedBuilder(
-          animation: _playerController,
+          animation: _editorController.video,
           builder: (_, __) {
             final duration = _editorController.video.value.duration.inSeconds;
             // final pos = _editorController.trimPosition * duration;
@@ -94,13 +88,13 @@ class _EditorPageState extends State<EditorPage> {
                       widthFactor: 1,
                       child: GestureDetector(
                         onTap: () {
-                          if (_playerController.value.isPlaying) {
+                          if (_editorController.isPlaying) {
                             _editorController.video.pause();
                           } else {
                             _editorController.video.play();
                           }
                         },
-                        child: VideoPlayer(_playerController),
+                        child: VideoPlayer(_editorController.video),
                       ),
                     ),
                     Positioned(
@@ -129,11 +123,14 @@ class _EditorPageState extends State<EditorPage> {
                                     ),
                                   )),
                               onPressed: () {
-                                //TODO Calculate Gait Velocity here
-                                final route = MaterialPageRoute(
-                                    fullscreenDialog: true,
-                                    builder: (_) => const AnalysisPage());
-                                Navigator.push(context, route);
+                                _editorController.video.pause().then((_) async {
+                                  logGaitVelocityStats(_editorController.video);
+                                  Future.delayed(Duration(seconds: 2));
+                                  final route = MaterialPageRoute<AnalysisPage>(
+                                      fullscreenDialog: true,
+                                      builder: (_) => const AnalysisPage());
+                                  await Navigator.push(context, route);
+                                });
                               }),
                         ],
                       ),
@@ -141,7 +138,7 @@ class _EditorPageState extends State<EditorPage> {
                   ],
                 ),
                 AnimatedBuilder(
-                  animation: _playerController,
+                  animation: _editorController.video,
                   builder: (_, __) => OpacityTransition(
                     visible: !_editorController.isPlaying,
                     child: GestureDetector(

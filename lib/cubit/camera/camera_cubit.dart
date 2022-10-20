@@ -17,8 +17,8 @@ class CameraCubit extends Cubit<CameraState> {
 
   CameraCubit() : super(CameraLoading());
   void startTimer(CameraController controller) {
-    timer = Timer.periodic(const Duration(milliseconds: 1), (_) {
-      duration = Duration(milliseconds: duration.inMilliseconds + 1);
+    timer = Timer.periodic(const Duration(milliseconds: 10), (_) {
+      duration = Duration(milliseconds: duration.inMilliseconds + 10);
 
       emit(CameraRecording(controller: controller, duration: duration));
     });
@@ -50,17 +50,23 @@ class CameraCubit extends Cubit<CameraState> {
   }
 
   void triggerState(BuildContext context, CameraState state) async {
-    if (state is CameraRecording) {
-      XFile file = await state.controller.stopVideoRecording();
-      MaterialPageRoute route = MaterialPageRoute(
-          fullscreenDialog: true,
-          builder: (_) => EditorPage(file: File(file.path)));
-      Navigator.push(context, route);
-      initCamera();
+    try {
+      if (state is CameraRecording) {
+        print(duration);
+        resetTimer();
+        XFile file = await state.controller.stopVideoRecording();
+        MaterialPageRoute route = MaterialPageRoute(
+            fullscreenDialog: true,
+            builder: (_) => EditorPage(file: File(file.path)));
+        Navigator.push(context, route);
+        initCamera();
+      } else if (state is CameraStandby) {
+        startTimer(state.controller);
+        state.controller.startVideoRecording();
+      }
+    } on Exception catch (e) {
       resetTimer();
-    } else if (state is CameraStandby) {
-      state.controller.startVideoRecording();
-      startTimer(state.controller);
+      emit(CameraError(exception: e));
     }
   }
 }
