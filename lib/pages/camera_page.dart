@@ -1,8 +1,7 @@
 import 'package:camera/camera.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gaiter/config.dart';
 
 import '../cubit/camera/camera_cubit.dart';
 
@@ -23,71 +22,59 @@ class _CameraPageState extends State<CameraPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => CameraCubit()..initCamera(),
-      child: BlocBuilder<CameraCubit, CameraState>(
-        builder: (context, state) {
-          return Scaffold(
-              extendBodyBehindAppBar: true,
-              appBar: AppBar(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                actions: state is CameraRecording || state is CameraStandby
-                    ? stopwatchWidget(context, state)
-                    : null,
-              ),
-              body: state is CameraError
-                  ? Center(
-                      child: Column(
-                        children: [
-                          Text(state.exception.toString()),
-                          ElevatedButton(
-                              onPressed: () =>
-                                  BlocProvider.of<CameraCubit>(context)
-                                    ..initCamera,
-                              child: const Text("Retry"))
-                        ],
-                      ),
-                    )
-                  : cameraWidget(context, state));
-        },
-      ),
+    return OrientationBuilder(
+      builder: ((context, orientation) => BlocProvider(
+            create: (context) => CameraCubit()..initCamera(),
+            child: BlocBuilder<CameraCubit, CameraState>(
+              builder: (context, state) {
+                return CupertinoPageScaffold(
+                    child: state is CameraError
+                        ? Center(
+                            child: Column(
+                              children: [
+                                Text(state.exception.toString()),
+                                CupertinoButton(
+                                    onPressed: () =>
+                                        BlocProvider.of<CameraCubit>(context)
+                                          ..initCamera,
+                                    child: const Text("Retry"))
+                              ],
+                            ),
+                          )
+                        : cameraWidget(context, state));
+              },
+            ),
+          )),
     );
   }
 
-  List<Widget> stopwatchWidget(BuildContext context, CameraState state) {
-    return [
-      Row(
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height / 8,
-            width: MediaQuery.of(context).size.width / 8,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: Colors.red,
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Center(
-                child: Text(
-                  (() {
-                    if (state is CameraRecording) {
-                      return formatter(state.duration);
-                    } else {
-                      return formatter(const Duration(seconds: 0));
-                    }
-                  }()),
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white.withOpacity(0.8),
-                    fontSize: 30,
-                  ),
-                ),
-              ),
+  Widget stopwatchWidget(BuildContext context, CameraState state) {
+    return SizedBox(
+      height: MediaQuery.of(context).size.height / 8,
+      width: MediaQuery.of(context).size.width / 8,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: CupertinoColors.systemRed,
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Center(
+          child: Text(
+            (() {
+              if (state is CameraRecording) {
+                return formatter(state.duration);
+              } else {
+                return formatter(const Duration(seconds: 0));
+              }
+            }()),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: CupertinoColors.white.withOpacity(0.8),
+              fontSize: 30,
             ),
           ),
-        ],
+        ),
       ),
-    ];
+    );
   }
 
   Widget cameraWidget(BuildContext context, CameraState state) {
@@ -102,9 +89,18 @@ class _CameraPageState extends State<CameraPage> {
               onTap: () => BlocProvider.of<CameraCubit>(context)
                   .triggerState(context, state),
               child: const Icon(
-                Icons.stop,
-                color: Colors.red,
+                CupertinoIcons.stop,
+                color: CupertinoColors.systemRed,
                 size: 80,
+              ),
+            ),
+            Positioned(
+              top: 20,
+              right: 20,
+              child: Row(
+                children: [
+                  stopwatchWidget(context, state),
+                ],
               ),
             ),
           ];
@@ -116,14 +112,23 @@ class _CameraPageState extends State<CameraPage> {
               onTap: () => BlocProvider.of<CameraCubit>(context)
                   .triggerState(context, state),
               child: const Icon(
-                Icons.circle,
-                color: Colors.white,
+                CupertinoIcons.circle,
+                color: CupertinoColors.white,
                 size: 80,
+              ),
+            ),
+            Positioned(
+              top: 20,
+              right: 20,
+              child: Row(
+                children: [
+                  stopwatchWidget(context, state),
+                ],
               ),
             ),
           ];
         } else {
-          return [const Center(child: CircularProgressIndicator())];
+          return [const Center(child: CupertinoActivityIndicator())];
         }
       }()),
     );

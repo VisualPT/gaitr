@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
 
@@ -52,10 +52,9 @@ class CameraCubit extends Cubit<CameraState> {
   void triggerState(BuildContext context, CameraState state) async {
     try {
       if (state is CameraRecording) {
-        print(duration);
         resetTimer();
         XFile file = await state.controller.stopVideoRecording();
-        MaterialPageRoute route = MaterialPageRoute(
+        CupertinoPageRoute route = CupertinoPageRoute(
             fullscreenDialog: true,
             builder: (_) => EditorPage(file: File(file.path)));
         Navigator.push(context, route);

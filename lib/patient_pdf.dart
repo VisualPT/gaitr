@@ -25,6 +25,7 @@ class PatientPdf {
   late TextStyle detail;
   late TextStyle detailBold;
   late TextStyle subHeader;
+  late TextStyle disclaimer;
 
   Future<void> configPdfStyles() async {
     baseFont = await PdfGoogleFonts.openSansRegular();
@@ -43,6 +44,7 @@ class PatientPdf {
     detail = TextStyle(font: baseFont, fontSize: 15.0);
     detailBold = TextStyle(font: boldFont, fontSize: 15.0);
     subHeader = TextStyle(font: boldFont, fontSize: 50.0);
+    disclaimer = TextStyle(font: baseFont, fontSize: 10.0);
     return;
   }
 
@@ -56,51 +58,112 @@ class PatientPdf {
 
     pdf.addPage(
       Page(
-        build: (Context context) => Center(
-          child: Column(children: [
-            Header(
-              child: RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                          text: "${userData.firstname} ${userData.lastname}",
-                          style: headerItalic),
-                      TextSpan(text: "'s Gait Report", style: header),
-                    ],
-                  ),
-                  overflow: TextOverflow.span),
-            ),
-            Row(children: [
-              RichText(
-                text: TextSpan(children: [
-                  TextSpan(text: "Birth Date: ", style: detail),
-                  TextSpan(text: userData.bday, style: detailBold),
-                ]),
-              ),
-              Spacer(),
-              RichText(
-                text: TextSpan(children: [
-                  TextSpan(text: "Sampled on ", style: detail),
-                  TextSpan(text: userData.date, style: detailBold),
-                  TextSpan(text: " at ", style: detail),
-                  TextSpan(text: userData.time, style: detailBold),
-                ]),
-              ),
-            ]),
-            Spacer(),
-            _gaitVelocityDetails(context),
-            Spacer(),
-            _fallRiskDetails(context, userData.fallRisk),
-            Spacer(flex: 2),
-            //Footer(),
-          ]),
-        ),
         pageTheme: PageTheme(
           pageFormat: PdfPageFormat.letter,
+          margin: EdgeInsets.all(inch.toDouble()),
           buildBackground: (context) => FullPage(
             ignoreMargins: true,
             child: SvgImage(svg: logo, fit: BoxFit.fitHeight),
           ),
+        ),
+        build: (Context context) => Center(
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Header(
+                child: FittedBox(
+              fit: BoxFit.fitWidth,
+              child: RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                          text: "Gaiter Fall Prediction Report", style: header),
+                    ],
+                  ),
+                  overflow: TextOverflow.span),
+            )),
+            Row(children: [
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                RichText(
+                  text: TextSpan(children: [
+                    TextSpan(text: "Sampled on ", style: detail),
+                    TextSpan(text: userData.date, style: detailBold),
+                    TextSpan(text: " at ", style: detail),
+                    TextSpan(text: userData.time, style: detailBold),
+                  ]),
+                ),
+                RichText(
+                  text: TextSpan(children: [
+                    TextSpan(text: "Patient Name: ", style: detail),
+                    TextSpan(
+                        text: "${userData.firstname} ${userData.lastname}",
+                        style: detailBold),
+                  ]),
+                ),
+              ]),
+              Spacer(),
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                RichText(
+                  text: TextSpan(children: [
+                    TextSpan(text: "Birth Date: ", style: detail),
+                    TextSpan(text: userData.bday, style: detailBold),
+                  ]),
+                ),
+                RichText(
+                  text: TextSpan(children: [
+                    TextSpan(text: "Age: ", style: detail),
+                    TextSpan(text: userData.age, style: detailBold),
+                  ]),
+                ),
+              ]),
+            ]),
+            Spacer(),
+            Row(children: [
+              _gaitVelocityDetails(context),
+              Spacer(),
+              _fallRiskDetails(context, userData.fallRisk),
+            ]),
+            RichText(
+              text: TextSpan(
+                  style: disclaimer,
+                  text:
+                      "A distance of 10 meters is measured over a level surface with 2 meters for acceleration and 2 meters for deceleration."),
+            ),
+            Spacer(flex: 2),
+            Footer(
+              padding: EdgeInsets.zero,
+              margin: EdgeInsets.zero,
+              leading: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RichText(
+                        text: TextSpan(
+                            style: disclaimer,
+                            text: "© 2022 Gaiter Measurement Softwares")),
+                    RichText(
+                        text: TextSpan(
+                            style: disclaimer,
+                            text: "No Distribution without Permission")),
+                  ]),
+              trailing: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  RichText(
+                      text: TextSpan(
+                          style: disclaimer,
+                          text: "Minimal Detectable Change: 0.1m/sec")),
+                  RichText(
+                      text: TextSpan(
+                          style: disclaimer,
+                          text:
+                              "Minimum Clinically Important Difference: 0.1m/sec")),
+                  RichText(
+                      text: TextSpan(
+                          style: disclaimer,
+                          text: "Test/Re-test Reliability: ICC > 0.7"))
+                ],
+              ),
+            ),
+          ]),
         ),
       ),
     );

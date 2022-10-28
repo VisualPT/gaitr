@@ -12,7 +12,7 @@ class PdfCubit extends Cubit<PdfState> {
   PdfCubit() : super(PdfLoading());
   bool viewCreated = false;
 
-//TODO get the cubit out of the loading state
+  //TODO display the PDF in an unzoomed state
   void initPDFView() async {
     emit(PdfLoading());
     try {
@@ -34,7 +34,7 @@ class PdfCubit extends Cubit<PdfState> {
     } on Exception catch (error) {
       emit(PdfError(exception: error));
     } catch (e) {
-      print(e);
+      log(e.toString());
     }
   }
 }

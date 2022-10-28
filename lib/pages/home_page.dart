@@ -1,6 +1,5 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:gaiter/config.dart';
 import 'package:gaiter/patient_form.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,13 +11,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  bool formIsVisible = false;
+
   @override
   void initState() {
     super.initState();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-    configureAmplify();
     FocusManager.instance.primaryFocus?.unfocus();
   }
 
@@ -26,21 +26,25 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-      child: Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                'a two-click tool',
-                style: Theme.of(context).textTheme.headline6,
-              ),
-              Text(
-                'for gait velocity detection and logging',
-                style: Theme.of(context).textTheme.headline6,
-              ),
-              const PatientForm()
-            ],
+      child: CupertinoPageScaffold(
+        navigationBar: CupertinoNavigationBar(
+            middle: const Text("Gaiter"),
+            trailing: CupertinoButton(
+                onPressed: () => Navigator.pushNamed(context, '/settings'),
+                child: const Icon(CupertinoIcons.settings))),
+        child: SafeArea(
+          child: Center(
+            child: Column(
+              children: [
+                CupertinoButton(
+                  color: CupertinoColors.link,
+                  child: const Text("New Patient"),
+                  onPressed: () =>
+                      setState(() => formIsVisible = !formIsVisible),
+                ),
+                if (formIsVisible) const PatientForm()
+              ],
+            ),
           ),
         ),
       ),

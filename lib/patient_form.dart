@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:gaiter/camera_page.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:gaiter/pages/camera_page.dart';
 import 'package:gaiter/storageHelper.dart';
 
 class PatientForm extends StatefulWidget {
@@ -30,17 +30,18 @@ class _PatientFormState extends State<PatientForm> {
                 validationRegex:
                     r'^(0[1-9]|1[0-2])\/(0[1-9]|1\d|2\d|3[01])\/(19|20)\d{2}$',
                 hintTextExample: "MM/DD/YYYY"),
-            const Padding(padding: EdgeInsets.symmetric(vertical: 16)),
-            ElevatedButton(
+            CupertinoButton(
+              color: CupertinoColors.link,
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();
-                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  Navigator.push(context,
+                      CupertinoPageRoute(builder: (context) {
                     return const CameraPage();
                   }));
                 }
               },
-              child: const Text('Submit'),
+              child: const Text('Begin'),
             ),
           ],
         ),
@@ -61,32 +62,20 @@ class _PatientFormState extends State<PatientForm> {
         border: Border.all(),
         borderRadius: BorderRadius.circular(1),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: Text(field),
-          ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width / 3,
-            child: TextFormField(
-              keyboardType: inputType,
-              maxLines: lines,
-              textCapitalization: TextCapitalization.words,
-              decoration:
-                  InputDecoration(hintText: hintText, border: InputBorder.none),
-              validator: (value) => value == null || value.isEmpty
-                  ? 'Please enter a valid response'
-                  : value.contains(RegExp(validationRegex))
-                      ? null
-                      : 'Please enter a valid response',
-              onSaved: (String? value) {
-                storeValue(field, value);
-              },
-            ),
-          ),
-        ],
+      child: CupertinoTextFormFieldRow(
+        prefix: Text(field),
+        keyboardType: inputType,
+        maxLines: lines,
+        textCapitalization: TextCapitalization.words,
+        placeholder: hintText,
+        validator: (value) => value == null || value.isEmpty
+            ? 'Please enter a valid response'
+            : value.contains(RegExp(validationRegex))
+                ? null
+                : 'Please enter a valid response',
+        onSaved: (String? value) {
+          storeValue(field, value);
+        },
       ),
     );
   }
