@@ -1,72 +1,45 @@
 //TO ADD FLUTTER TO PATH, PUT THIS IN THE TERMINAL
 //export PATH=/Users/crich/Documents/flutter/bin:$PATH
 
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:amplify_authenticator/amplify_authenticator.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:gaiter/config.dart';
-import 'package:gaiter/form.dart';
+import 'package:gaiter/pages/pages.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const Root());
 }
 
-//TODO Optimize camera startup time
-//TODO Generate PDF
+//TODO storage hookup
+//TODO Styling
+//TODO Ios app store (payment)
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Gaiter - Gait Velocity Detector',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const HomePage(),
-    );
-  }
-}
-
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class Root extends StatefulWidget {
+  const Root({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<Root> createState() => _RootState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _RootState extends State<Root> {
   @override
   void initState() {
     super.initState();
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
     configureAmplify();
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-      child: Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                'a two-click tool',
-                style: Theme.of(context).textTheme.headline6,
-              ),
-              Text(
-                'for gait velocity detection and logging',
-                style: Theme.of(context).textTheme.headline6,
-              ),
-              const PatientForm()
-            ],
-          ),
-        ),
+    return Authenticator(
+      child: CupertinoApp(
+        title: 'Gaiter',
+        builder: Authenticator.builder(),
+        routes: {
+          "/": (context) => const HomePage(),
+          "/camera": (context) => const CameraPage(),
+          "/confirm": (context) => const ArchivePage(),
+          "/settings": (context) => const SettingsPage(),
+        },
       ),
     );
   }

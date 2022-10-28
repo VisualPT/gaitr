@@ -1,8 +1,9 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:gaiter/analysis_page.dart';
+import 'package:gaiter/pages/confirm_page.dart';
+import 'package:gaiter/storageHelper.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_editor/video_editor.dart';
 import 'package:helpers/helpers.dart' show OpacityTransition;
@@ -19,10 +20,11 @@ class EditorPage extends StatefulWidget {
 class _EditorPageState extends State<EditorPage> {
   final double height = 60;
   late VideoEditorController _editorController;
-  late VideoPlayerController _playerController;
+  //late VideoPlayerController _playerController;
 
   @override
   void initState() {
+    super.initState();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
@@ -30,28 +32,29 @@ class _EditorPageState extends State<EditorPage> {
     _editorController = VideoEditorController.file(widget.file,
         maxDuration: const Duration(seconds: 60))
       ..initialize().then((_) => setState(() {}));
-    _playerController = _editorController.video;
-    _playerController.play();
     //_controller.video.setLooping(true);
-    super.initState();
   }
 
   @override
   void dispose() {
-    _playerController.dispose();
     _editorController.dispose();
     super.dispose();
   }
 
+  void logGaitVelocityStats(VideoPlayerController controller) {
+    final double seconds = controller.value.duration.inMilliseconds / 1000;
+    calculateFallRisk(seconds);
+    userData.velocity = (10 / seconds).toStringAsPrecision(2);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: AnimatedBuilder(
-          animation: _playerController,
+    return CupertinoPageScaffold(
+      navigationBar: CupertinoNavigationBar(
+        backgroundColor: const Color(0x00000000),
+        border: Border.all(color: const Color(0x00000000)),
+        middle: AnimatedBuilder(
+          animation: _editorController.video,
           builder: (_, __) {
             final duration = _editorController.video.value.duration.inSeconds;
             // final pos = _editorController.trimPosition * duration;
@@ -71,7 +74,7 @@ class _EditorPageState extends State<EditorPage> {
           },
         ),
       ),
-      body: _editorController.initialized
+      child: _editorController.initialized
           ? Stack(
               alignment: Alignment.center,
               children: [
@@ -82,13 +85,13 @@ class _EditorPageState extends State<EditorPage> {
                       widthFactor: 1,
                       child: GestureDetector(
                         onTap: () {
-                          if (_playerController.value.isPlaying) {
+                          if (_editorController.isPlaying) {
                             _editorController.video.pause();
                           } else {
                             _editorController.video.play();
                           }
                         },
-                        child: VideoPlayer(_playerController),
+                        child: VideoPlayer(_editorController.video),
                       ),
                     ),
                     Positioned(
@@ -99,13 +102,17 @@ class _EditorPageState extends State<EditorPage> {
                             height: height,
                             width: MediaQuery.of(context).size.width / 1.4,
                             child: TrimSlider(
+                              // height: ,
                               controller: _editorController,
                             ),
                           ),
                           const SizedBox(
                             width: 20,
                           ),
-                          ElevatedButton(
+                          CupertinoButton(
+                              padding: const EdgeInsets.only(
+                                  top: 1, bottom: 1, right: 20, left: 20),
+                              color: CupertinoColors.link,
                               child: SizedBox(
                                   height: height,
                                   width: MediaQuery.of(context).size.width / 10,
@@ -116,10 +123,14 @@ class _EditorPageState extends State<EditorPage> {
                                     ),
                                   )),
                               onPressed: () {
-                                final route = MaterialPageRoute(
-                                    fullscreenDialog: true,
-                                    builder: (_) => const AnalysisPage());
-                                Navigator.push(context, route);
+                                _editorController.video.pause().then((_) async {
+                                  logGaitVelocityStats(_editorController.video);
+                                  Future.delayed(const Duration(seconds: 2));
+                                  final route = CupertinoPageRoute<ConfirmPage>(
+                                      fullscreenDialog: true,
+                                      builder: (_) => const ConfirmPage());
+                                  await Navigator.push(context, route);
+                                });
                               }),
                         ],
                       ),
@@ -127,27 +138,28 @@ class _EditorPageState extends State<EditorPage> {
                   ],
                 ),
                 AnimatedBuilder(
-                  animation: _playerController,
+                  animation: _editorController.video,
                   builder: (_, __) => OpacityTransition(
                     visible: !_editorController.isPlaying,
                     child: GestureDetector(
                       onTap: _editorController.video.play,
                       child: Container(
+                        alignment: Alignment.center,
                         width: 40,
                         height: 40,
                         decoration: const BoxDecoration(
-                          color: Colors.white,
+                          color: CupertinoColors.white,
                           shape: BoxShape.circle,
                         ),
-                        child:
-                            const Icon(Icons.play_arrow, color: Colors.black),
+                        child: const Icon(CupertinoIcons.play_arrow,
+                            color: CupertinoColors.black),
                       ),
                     ),
                   ),
                 ),
               ],
             )
-          : const Center(child: CircularProgressIndicator()),
+          : const Center(child: CupertinoActivityIndicator()),
     );
   }
 
