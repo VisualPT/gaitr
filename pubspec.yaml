@@ -18,7 +18,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.16.2 <3.0.0"
+  sdk: ">=2.17.0 <3.0.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -47,6 +47,7 @@ dependencies:
   flutter_bloc: ^8.1.1
   flutter_pdfview: ^1.2.1
   printing: ^5.9.3
+  equatable: ^2.0.5
 
 dev_dependencies:
   flutter_test:
@@ -72,6 +73,9 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - fyzman-blue.svg
+    - fyzman-blue-icon.png
+    - fyzman-black-icon.png
+
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
