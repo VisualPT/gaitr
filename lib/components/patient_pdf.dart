@@ -1,10 +1,9 @@
 //DO NOT IMPORT material.dart without renaming it with <as> keyword, will conflict with pdf/widgets.dart
 import 'package:flutter/services.dart';
+import 'package:gaiter/models/patient_data.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 import 'package:printing/printing.dart';
-
-import 'storageHelper.dart';
 
 class PatientPdf {
   late Font baseFont;
@@ -19,6 +18,7 @@ class PatientPdf {
   late BorderSide borderSide;
 
   final int inch = 72;
+  final int halfinch = 36;
 
   late TextStyle header;
   late TextStyle headerItalic;
@@ -48,19 +48,21 @@ class PatientPdf {
     return;
   }
 
-  Future<Uint8List> generatePdf(UserData userData) async {
+  Future<Uint8List> generatePdf(PatientData patentData) async {
     await configPdfStyles();
     final logo = await rootBundle.loadString('assets/fyzman-blue.svg');
 
     final pdf = Document(
-        title: userData.lastname + userData.firstname + userData.age.toString(),
+        title: patientData.lastname +
+            patientData.firstname +
+            patientData.age.toString(),
         creator: "Gaiter Systems");
 
     pdf.addPage(
       Page(
         pageTheme: PageTheme(
           pageFormat: PdfPageFormat.letter,
-          margin: EdgeInsets.all(inch.toDouble()),
+          margin: EdgeInsets.all(halfinch.toDouble()),
           buildBackground: (context) => FullPage(
             ignoreMargins: true,
             child: SvgImage(svg: logo, fit: BoxFit.fitHeight),
@@ -85,17 +87,26 @@ class PatientPdf {
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 RichText(
                   text: TextSpan(children: [
-                    TextSpan(text: "Sampled on ", style: detail),
-                    TextSpan(text: userData.date, style: detailBold),
+                    TextSpan(text: "Sampled on: ", style: detail),
+                    TextSpan(text: patientData.date, style: detailBold),
                     TextSpan(text: " at ", style: detail),
-                    TextSpan(text: userData.time, style: detailBold),
+                    TextSpan(text: patientData.time, style: detailBold),
                   ]),
                 ),
                 RichText(
                   text: TextSpan(children: [
                     TextSpan(text: "Patient Name: ", style: detail),
                     TextSpan(
-                        text: "${userData.firstname} ${userData.lastname}",
+                        text:
+                            "${patientData.firstname} ${patientData.lastname}",
+                        style: detailBold),
+                  ]),
+                ),
+                RichText(
+                  text: TextSpan(children: [
+                    TextSpan(text: "Measurement Method: ", style: detail),
+                    TextSpan(
+                        text: patientData.isVideo ? "Video" : "Stopwatch",
                         style: detailBold),
                   ]),
                 ),
@@ -105,13 +116,13 @@ class PatientPdf {
                 RichText(
                   text: TextSpan(children: [
                     TextSpan(text: "Birth Date: ", style: detail),
-                    TextSpan(text: userData.bday, style: detailBold),
+                    TextSpan(text: patientData.bday, style: detailBold),
                   ]),
                 ),
                 RichText(
                   text: TextSpan(children: [
                     TextSpan(text: "Age: ", style: detail),
-                    TextSpan(text: userData.age, style: detailBold),
+                    TextSpan(text: patientData.age, style: detailBold),
                   ]),
                 ),
               ]),
@@ -120,19 +131,22 @@ class PatientPdf {
             Row(children: [
               _gaitVelocityDetails(context),
               Spacer(),
-              _fallRiskDetails(context, userData.fallRisk),
+              _fallRiskDetails(context, patientData.fallRisk),
             ]),
+            Spacer(),
             RichText(
+              textAlign: TextAlign.center,
               text: TextSpan(
                   style: disclaimer,
                   text:
                       "A distance of 10 meters is measured over a level surface with 2 meters for acceleration and 2 meters for deceleration."),
             ),
-            Spacer(flex: 2),
+            Spacer(flex: 4),
             Footer(
               padding: EdgeInsets.zero,
               margin: EdgeInsets.zero,
               leading: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     RichText(
@@ -145,6 +159,7 @@ class PatientPdf {
                             text: "No Distribution without Permission")),
                   ]),
               trailing: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   RichText(
@@ -189,7 +204,7 @@ class PatientPdf {
               RichText(text: TextSpan(text: "Gait Velocity", style: header)),
               Spacer(),
               RichText(
-                  text: TextSpan(text: userData.velocity, style: subHeader)),
+                  text: TextSpan(text: patientData.velocity, style: subHeader)),
               Spacer(),
               RichText(text: TextSpan(text: "meters/second", style: detail)),
               Spacer()
