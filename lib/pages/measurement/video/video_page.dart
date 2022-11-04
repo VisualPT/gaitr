@@ -2,20 +2,20 @@ import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-import '../cubit/camera/camera_cubit.dart';
+import '../../../cubit/camera/camera_cubit.dart';
 
-class CameraPage extends StatefulWidget {
-  const CameraPage({Key? key}) : super(key: key);
+class VideoPage extends StatefulWidget {
+  const VideoPage({Key? key}) : super(key: key);
 
   @override
-  _CameraPageState createState() => _CameraPageState();
+  _VideoPageState createState() => _VideoPageState();
 }
 
-class _CameraPageState extends State<CameraPage> {
+class _VideoPageState extends State<VideoPage> {
   @override
   void initState() {
-    //TODO  "Requires full screen" to true in the Xcode Deployment Info.
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
     super.initState();
   }
@@ -66,10 +66,9 @@ class _CameraPageState extends State<CameraPage> {
                 return formatter(const Duration(seconds: 0));
               }
             }()),
-            style: TextStyle(
+            style: GoogleFonts.robotoMono(
               fontWeight: FontWeight.bold,
               color: CupertinoColors.white.withOpacity(0.8),
-              fontSize: 30,
             ),
           ),
         ),

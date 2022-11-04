@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 
 import 'package:camera/camera.dart';
 
-import 'package:gaiter/pages/editor_page.dart';
+import 'package:gaiter/pages/measurement/video/editor_page.dart';
 
 part 'camera_state.dart';
 

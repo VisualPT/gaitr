@@ -1,9 +1,15 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gaiter/components/consent_dialog.dart';
 import 'package:gaiter/cubit/pdf/pdf_cubit.dart';
-import 'package:helpers/helpers/transition.dart';
-import 'package:video_editor/video_editor.dart';
+import 'package:gaiter/components/fancy_plasma.dart';
+import 'package:gaiter/data_helper.dart';
+import 'package:gaiter/models/patient_data.dart';
+import 'package:http/http.dart' as http;
 
 class ConfirmPage extends StatefulWidget {
   const ConfirmPage({Key? key}) : super(key: key);
@@ -13,16 +19,10 @@ class ConfirmPage extends StatefulWidget {
 }
 
 class _ConfirmPageState extends State<ConfirmPage> {
-  final _exportingProgress = ValueNotifier<double>(0.0);
-  final _isExporting = ValueNotifier<bool>(false);
-  bool _exported = false;
-  String _exportText = "";
-  late VideoEditorController _controller;
   final double height = 60;
 
   @override
   void initState() {
-    //TODO  "Requires full screen" to true in the Xcode Deployment Info.
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
@@ -30,170 +30,146 @@ class _ConfirmPageState extends State<ConfirmPage> {
   }
 
   @override
-  void dispose() {
-    _exportingProgress.dispose();
-    _isExporting.dispose();
-    super.dispose();
-  }
-
-  // void _exportVideo() async {
-  //   _exportingProgress.value = 0;
-  //   _isExporting.value = true;
-  //   // NOTE: To use `-crf 1` and [VideoExportPreset] you need `ffmpeg_kit_flutter_min_gpl` package (with `ffmpeg_kit` only it won't work)
-  //   await _controller.exportVideo(
-  //     // preset: VideoExportPreset.medium,
-  //     // customInstruction: "-crf 17",
-  //     onProgress: (stats, value) => _exportingProgress.value = value,
-  //     onError: (e, s) => _exportText = "Error on export video :(",
-  //     onCompleted: (file) {
-  //       _isExporting.value = false;
-  //       if (!mounted) return;
-
-  //       final VideoPlayerController videoController =
-  //           VideoPlayerController.file(file);
-  //       videoController.initialize().then((value) async {
-  //         setState(() {});
-  //         videoController.play();
-  //         videoController.setLooping(true);
-  //         await showDialog(
-  //           context: context,
-  //           builder: (_) => Padding(
-  //             padding: const EdgeInsets.all(30),
-  //             child: Center(
-  //               child: AspectRatio(
-  //                 aspectRatio: videoController.value.aspectRatio,
-  //                 child: VideoPlayer(videoController),
-  //               ),
-  //             ),
-  //           ),
-  //         );
-  //         await videoController.pause();
-  //         videoController.dispose();
-  //       });
-
-  //       setState(() => _exported = true);
-  //       Future.delayed(const Duration(seconds: 2),
-  //           () => setState(() => _exported = false));
-  //     },
-  //   );
-  // }
-
-  //TODO Hook up with download button
-  Widget _customSnackBar() {
-    return Align(
-      alignment: Alignment.bottomCenter,
-      child: SwipeTransition(
-        visible: _exported,
-        axisAlignment: 1.0,
-        child: Container(
-          height: height,
-          width: double.infinity,
-          color: CupertinoColors.black.withOpacity(0.8),
-          child: Center(
-            child: Text(_exportText,
-                style: const TextStyle(fontWeight: FontWeight.bold)),
-          ),
-        ),
-      ),
-    );
-  }
-
-  @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(
-        automaticallyImplyLeading: false,
-        middle: Text("Confirm PDF"),
-      ),
-      child: buildPdf(context),
-    );
-  }
-
-  Widget buildPdf(BuildContext context) {
-    return BlocProvider(
-      create: (context) => PdfCubit()..initPDFView(),
-      child: BlocBuilder<PdfCubit, PdfState>(
-        builder: (context, state) {
-          if (state is PdfLoaded) {
-            return SafeArea(
-              child: Center(
-                child: Column(children: [
-                  AspectRatio(
-                    aspectRatio: 8.5 / 11,
-                    child: Stack(children: [
-                      //Button here incase the PDF does not render
-                      CupertinoButton(
-                          onPressed:
-                              BlocProvider.of<PdfCubit>(context).initPDFView,
-                          child: const Text("retry")),
-                      state.pdfView
-                    ]),
-                  ),
-                  Row(children: [
-                    CupertinoButton(
-                      color: CupertinoColors.link,
-                      onPressed: () => Navigator.pushNamedAndRemoveUntil(
-                          context, '/camera', ModalRoute.withName('/')),
-                      child: const Text("Redo"),
+      child: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          FancyPlasmaWidget(color: CupertinoColors.systemBlue.withOpacity(0.4)),
+          BlocProvider(
+            create: (context) => PdfCubit()..initPDFView(),
+            child: BlocBuilder<PdfCubit, PdfState>(
+              builder: (context, state) {
+                if (state is PdfLoaded) {
+                  return SafeArea(
+                    child: Center(
+                      child: Column(children: [
+                        Text(
+                          "${patientData.firstname} ${patientData.lastname} Gait Report",
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 20),
+                        ),
+                        const Spacer(),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: AspectRatio(
+                            aspectRatio: 8.5 / 11,
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                //Button here incase the PDF does not render
+                                CupertinoButton(
+                                    onPressed:
+                                        BlocProvider.of<PdfCubit>(context)
+                                            .initPDFView,
+                                    child: const Text("retry")),
+                                state.pdfView,
+                              ],
+                            ),
+                          ),
+                        ),
+                        const Text(
+                            "Pinch the PDF to preview the full document"),
+                        const Spacer(),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(children: [
+                            CupertinoButton(
+                              color: CupertinoColors.link,
+                              onPressed: () {
+                                consentDialog(
+                                    context,
+                                    "Clear patient gait data",
+                                    "Are you sure you want to redo the gait analysis",
+                                    "No",
+                                    "Yes",
+                                    () => Navigator.pop(context),
+                                    () => Navigator.pushNamedAndRemoveUntil(
+                                        context,
+                                        '/measurement',
+                                        ModalRoute.withName('/'),
+                                        arguments: patientData.isVideo));
+                              },
+                              child: const Text("Redo"),
+                            ),
+                            const Spacer(),
+                            CupertinoButton(
+                              color: CupertinoColors.link,
+                              onPressed: () {
+                                patientData.rawReportData =
+                                    uint8ListTob64(state.pdfView.pdfData!)
+                                        .toString();
+                                sendEmail().then(
+                                  (response) {
+                                    log(response.body);
+                                    if (response.body == 'OK') {
+                                      consentDialog(
+                                        context,
+                                        "Save patient gait data",
+                                        "Are you sure you want to proceed",
+                                        "No",
+                                        "Yes",
+                                        () => Navigator.pop(context),
+                                        () => Navigator.pushNamedAndRemoveUntil(
+                                          context,
+                                          '/',
+                                          ModalRoute.withName('/'),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                );
+                              },
+                              child: const Text("Save"),
+                            )
+                          ]),
+                        )
+                      ]),
                     ),
-                    const Spacer(),
-                    CupertinoButton(
-                      color: CupertinoColors.link,
-                      onPressed: () {
-                        //TODO Amplify Data Storage Functions Here
-                        Navigator.pushNamedAndRemoveUntil(
-                            context, '/', ModalRoute.withName('/'));
-                      },
-                      child: const Text("Save"),
-                    )
-                  ])
-                ]),
-              ),
-            );
-          } else if (state is PdfLoading) {
-            return const Center(
-              child: CupertinoActivityIndicator(),
-            );
-          } else if (state is PdfError) {
-            return Center(
-              child: Text(state.exception.toString()),
-            );
-          } else {
-            return const Center(
-              child: Text("Invalid PDF State"),
-            );
-          }
-        },
+                  );
+                } else if (state is PdfLoading) {
+                  return const Center(
+                    child: CupertinoActivityIndicator(),
+                  );
+                } else if (state is PdfError) {
+                  return Center(
+                    child: Text(state.exception.toString()),
+                  );
+                } else {
+                  return const Center(
+                    child: Text("Invalid PDF State"),
+                  );
+                }
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
-// Column(
-        //children: [
-          // IconButton(
-          //   onPressed: _exportVideo,
-          //   icon: const Icon(Icons.save),
-          // )
-          // ValueListenableBuilder(
-          //   valueListenable: _isExporting,
-          //   builder: (_, bool export, __) => OpacityTransition(
-          //     visible: export,
-          //     child: AlertDialog(
-          //       backgroundColor: Colors.white,
-          //       title: ValueListenableBuilder(
-          //         valueListenable: _exportingProgress,
-          //         builder: (_, double value, __) => Text(
-          //           "Exporting video ${(value * 100).ceil()}%",
-          //           style: const TextStyle(
-          //             color: Colors.black,
-          //             fontWeight: FontWeight.bold,
-          //             fontSize: 14,
-          //           ),
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          // ),
-       // ],
-     // ),
+Future<http.Response> sendEmail() async {
+  const serviceId = "service_1j62fhe";
+  const templateId = "template_95smzbm";
+  const userId = "_SUuxjVW52hmODTRs";
+
+  final url = Uri.parse("https://api.emailjs.com/api/v1.0/email/send");
+  return await http.post(
+    url,
+    headers: {'origin': 'http://localhost', 'Content-type': 'application/json'},
+    body: json.encode(
+      {
+        'service_id': serviceId,
+        'template_id': templateId,
+        'user_id': userId,
+        'template_params': {
+          'patient_name': "${patientData.firstname} ${patientData.lastname}",
+          'patient_dob': patientData.bday,
+          'user_email': patientData.managingtherapistEmail,
+          'patient_pdf': patientData.rawReportData,
+        }
+      },
+    ),
+  );
+}

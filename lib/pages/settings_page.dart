@@ -18,13 +18,6 @@ class SettingsPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 const Spacer(),
-
-                CupertinoButton(
-                    color: CupertinoColors.destructiveRed,
-                    child: const Text("Delete Stored Patient PDFs"),
-                    onPressed: () =>
-                        Amplify.Storage.remove(key: "TODO")), //TODO
-                const Spacer(),
                 CupertinoButton(
                   color: CupertinoColors.destructiveRed,
                   child: const Text("Sign Out"),
