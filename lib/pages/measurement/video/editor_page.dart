@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:gaiter/pages/confirm_page.dart';
-import 'package:gaiter/storageHelper.dart';
+import 'package:gaiter/models/patient_data.dart';
+import 'package:gaiter/data_helper.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_editor/video_editor.dart';
 import 'package:helpers/helpers.dart' show OpacityTransition;
@@ -44,7 +44,7 @@ class _EditorPageState extends State<EditorPage> {
   void logGaitVelocityStats(VideoPlayerController controller) {
     final double seconds = controller.value.duration.inMilliseconds / 1000;
     calculateFallRisk(seconds);
-    userData.velocity = (10 / seconds).toStringAsPrecision(2);
+    patientData.velocity = (10 / seconds).toStringAsPrecision(2);
   }
 
   @override
@@ -123,13 +123,9 @@ class _EditorPageState extends State<EditorPage> {
                                     ),
                                   )),
                               onPressed: () {
-                                _editorController.video.pause().then((_) async {
+                                _editorController.video.pause().then((_) {
                                   logGaitVelocityStats(_editorController.video);
-                                  Future.delayed(const Duration(seconds: 2));
-                                  final route = CupertinoPageRoute<ConfirmPage>(
-                                      fullscreenDialog: true,
-                                      builder: (_) => const ConfirmPage());
-                                  await Navigator.push(context, route);
+                                  Navigator.pushNamed(context, '/confirm');
                                 });
                               }),
                         ],
