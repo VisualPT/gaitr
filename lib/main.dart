@@ -10,7 +10,7 @@ void main() {
   runApp(const Root());
 }
 
-//TODO storage hookup
+//TODO Email user PDF
 //TODO Styling
 //TODO Ios app store (payment)
 
@@ -35,8 +35,10 @@ class _RootState extends State<Root> {
         title: 'Gaiter',
         builder: Authenticator.builder(),
         routes: {
-          "/": (context) => const HomePage(),
-          "/camera": (context) => const CameraPage(),
+          "/": (context) => const LandingPage(),
+          "/form": (context) => const FormPage(),
+          "/measure/camera": (context) => const CameraPage(),
+          "/measure/stopwatch": (context) => const StopwatchPage(),
           "/confirm": (context) => const ArchivePage(),
           "/settings": (context) => const SettingsPage(),
         },
