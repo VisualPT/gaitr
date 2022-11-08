@@ -54,18 +54,7 @@ class _ConfirmPageState extends State<ConfirmPage> {
                           padding: const EdgeInsets.all(8.0),
                           child: AspectRatio(
                             aspectRatio: 8.5 / 11,
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                //Button here incase the PDF does not render
-                                CupertinoButton(
-                                    onPressed:
-                                        BlocProvider.of<PdfCubit>(context)
-                                            .initPDFView,
-                                    child: const Text("retry")),
-                                state.pdfView,
-                              ],
-                            ),
+                            child: state.pdfView,
                           ),
                         ),
                         const Text(
@@ -83,7 +72,8 @@ class _ConfirmPageState extends State<ConfirmPage> {
                                     "Are you sure you want to redo the gait analysis",
                                     "No",
                                     "Yes",
-                                    () => Navigator.pop(context),
+                                    () => Navigator.popAndPushNamed(
+                                        context, "/confirm"),
                                     () => Navigator.pushNamedAndRemoveUntil(
                                         context,
                                         '/measurement',
@@ -96,27 +86,31 @@ class _ConfirmPageState extends State<ConfirmPage> {
                             CupertinoButton(
                               color: CupertinoColors.link,
                               onPressed: () {
-                                patientData.rawReportData =
-                                    uint8ListTob64(state.pdfView.pdfData!)
-                                        .toString();
-                                sendEmail().then(
-                                  (response) {
-                                    log(response.body);
-                                    if (response.body == 'OK') {
-                                      consentDialog(
-                                        context,
-                                        "Save patient gait data",
-                                        "Are you sure you want to proceed",
-                                        "No",
-                                        "Yes",
-                                        () => Navigator.pop(context),
-                                        () => Navigator.pushNamedAndRemoveUntil(
-                                          context,
-                                          '/',
-                                          ModalRoute.withName('/'),
-                                        ),
-                                      );
-                                    }
+                                consentDialog(
+                                  context,
+                                  "Save patient gait data",
+                                  "Are you sure you want to proceed",
+                                  "No",
+                                  "Yes",
+                                  () => Navigator.pop(context),
+                                  () {
+                                    patientData.rawReportData =
+                                        uint8ListTob64(state.pdfView.pdfData!)
+                                            .toString();
+                                    sendEmail().then(
+                                      (response) {
+                                        log(response.body);
+                                        if (response.body == 'OK') {
+                                          Navigator.pushNamedAndRemoveUntil(
+                                            context,
+                                            '/',
+                                            ModalRoute.withName('/'),
+                                          );
+                                        } else {
+                                          log("error sending email");
+                                        }
+                                      },
+                                    );
                                   },
                                 );
                               },

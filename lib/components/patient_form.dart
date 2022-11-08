@@ -54,11 +54,11 @@ class _PatientFormState extends State<PatientForm> {
                 const Spacer(),
                 _formInput("First Name"),
                 _formInput("Last Name"),
+                //TODO autofill the slashes for date
                 _formInput("Birth Date",
                     validationRegex:
                         r'^(0[1-9]|1[0-2])\/(0[1-9]|1\d|2\d|3[01])\/(19|20)\d{2}$',
                     hintTextExample: "MM/DD/YYYY"),
-                const Spacer(),
               ],
             ),
           ),
@@ -93,7 +93,7 @@ class _PatientFormState extends State<PatientForm> {
         ? 'Enter a ${field.split(' ')[1].toLowerCase()}'
         : hintTextExample;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      padding: const EdgeInsets.only(top: 10.0),
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: CupertinoColors.systemBackground,
