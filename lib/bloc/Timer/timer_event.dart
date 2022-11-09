@@ -1,3 +1,5 @@
+// ignore_for_file: overridden_fields
+
 part of 'timer_bloc.dart';
 
 abstract class TimerEvent extends Equatable {

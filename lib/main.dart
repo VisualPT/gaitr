@@ -14,6 +14,7 @@ void main() {
 }
 
 //TODO Ios app store (payment)
+//TODO TEST On IPAD
 
 class Root extends StatefulWidget {
   const Root({Key? key}) : super(key: key);

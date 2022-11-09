@@ -47,6 +47,7 @@ class CameraCubit extends Cubit<CameraState> {
     } on Exception catch (e) {
       emit(CameraError(exception: e));
     }
+    //TODO Handle exception when no camera available
   }
 
   void triggerState(BuildContext context, CameraState state) async {
