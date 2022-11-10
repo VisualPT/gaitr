@@ -15,9 +15,16 @@ flutter pub get
 
 # Install CocoaPods using Homebrew.
 HOMEBREW_NO_AUTO_UPDATE=1 # disable homebrew's automatic updates.
+HOMEBREW_NO_INSTALL_CLEANUP=1 # speed up build time
+
+
 brew install cocoapods
 
 # Install CocoaPods dependencies.
 cd ios && pod install # run `pod install` in the `ios` directory.
+
+cd ..
+# Get amplify configuration file
+amplify pull --appId d2hh5wki5gcwzi --envName staging
 
 exit 0
