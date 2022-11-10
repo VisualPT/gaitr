@@ -24,8 +24,5 @@ brew install cocoapods
 cd ios && pod install # run `pod install` in the `ios` directory.
 
 cd ..
-curl -sL https://aws-amplify.github.io/amplify-cli/install | bash && $SHELL
-# Get amplify configuration file
-amplify pull --appId d2hh5wki5gcwzi --envName staging
 
 exit 0
