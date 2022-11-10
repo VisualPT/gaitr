@@ -24,7 +24,7 @@ brew install cocoapods
 cd ios && pod install # run `pod install` in the `ios` directory.
 
 cd ..
-export PATH="/usr/local/bin/amplify:$PATH"
+export PATH="$PATH:$HOME/amplify/bin"
 # Get amplify configuration file
 amplify pull --appId d2hh5wki5gcwzi --envName staging
 
