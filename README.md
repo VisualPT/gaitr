@@ -1,6 +1,6 @@
 # Gaiter - gait velocity detection
 
-Healthcare tool for accelerating therapist measurements.
+Healthcare tool for improving therapist experience.
 
 [Gait Velocity](https://www.sralab.org/rehabilitation-measures/gait-speed#) is most accurately measured over 10 meters with 2 extra meters on both ends for acceleration and deceleration.
 
