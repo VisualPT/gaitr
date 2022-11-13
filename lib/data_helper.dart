@@ -2,13 +2,6 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data';
 
-import 'package:gaiter/models/patient_data.dart';
-
-void calculateFallRisk(double seconds) {
-  double risk = (seconds - 7) / 20;
-  patientData.fallRisk = risk.clamp(0.1, 1.0);
-}
-
 ///Input string is in format MM/DD/YYYY , returns a DateTime instance
 stringToDateTime(String birthdate) {
   try {

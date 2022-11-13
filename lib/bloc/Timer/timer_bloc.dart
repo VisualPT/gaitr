@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:gaiter/bloc/Timer/ticker.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:gaiter/data_helper.dart';
 import 'package:gaiter/models/patient_data.dart';
 
 part 'timer_event.dart';
@@ -40,7 +39,7 @@ class TimerBloc extends Bloc<TimerEvent, TimerState> {
 
   void _onReset(TimerReset event, Emitter<TimerState> emit) {
     final double seconds = event.duration.inMilliseconds / 1000;
-    calculateFallRisk(seconds);
+    patientData.measurementDuration = seconds;
     patientData.velocity = (10 / seconds).toStringAsPrecision(2);
 
     _tickerSubscription?.cancel();

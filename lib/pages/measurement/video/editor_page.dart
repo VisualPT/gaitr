@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:gaiter/models/patient_data.dart';
-import 'package:gaiter/data_helper.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_editor/video_editor.dart';
 import 'package:helpers/helpers.dart' show OpacityTransition;
@@ -43,11 +42,12 @@ class _EditorPageState extends State<EditorPage> {
 
   void logGaitVelocityStats(VideoPlayerController controller) {
     final double seconds = controller.value.duration.inMilliseconds / 1000;
-    calculateFallRisk(seconds);
+    patientData.measurementDuration = seconds;
     patientData.velocity = (10 / seconds).toStringAsPrecision(2);
   }
 
   @override
+  //TODO show the total measurement time at all times
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(

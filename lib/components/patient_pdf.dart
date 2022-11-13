@@ -126,18 +126,16 @@ class PatientPdf {
                 text: TextSpan(children: [
                   TextSpan(
                       text: "Measurement Duration (ss:ms): ", style: detail),
-                  TextSpan(text: patientData.time, style: detailBold),
+                  TextSpan(
+                      text: patientData.measurementDuration
+                          .toStringAsPrecision(3),
+                      style: detailBold),
                 ]),
               ),
               RichText(
                   text: TextSpan(children: [
                 TextSpan(text: "Gait Velocity (m/s): ", style: detail),
                 TextSpan(text: patientData.velocity, style: detailBold),
-              ])),
-              RichText(
-                  text: TextSpan(children: [
-                TextSpan(text: "Fall Risk: ", style: detail),
-                TextSpan(text: _fallRiskDetails(), style: detailBold)
               ])),
             ]),
             Spacer(),
@@ -192,14 +190,6 @@ class PatientPdf {
       ),
     );
     return pdf.save();
-  }
-
-  String _fallRiskDetails() {
-    return patientData.fallRisk < 0.33
-        ? "Low"
-        : patientData.fallRisk < 0.66
-            ? "Moderate"
-            : "High";
   }
 }
 
