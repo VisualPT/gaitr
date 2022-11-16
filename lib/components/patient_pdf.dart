@@ -1,9 +1,9 @@
 //DO NOT IMPORT material.dart without renaming it with <as> keyword, will conflict with pdf/widgets.dart
 import 'package:flutter/services.dart';
-import 'package:gaiter/models/patient_data.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 import 'package:printing/printing.dart';
+import 'package:gaitr/models/patient_data.dart';
 
 class PatientPdf {
   late Font baseFont;
@@ -51,14 +51,14 @@ class PatientPdf {
   Future<Uint8List> generatePdf(PatientData patentData) async {
     await configPdfStyles();
     final fyzLogo = await rootBundle.loadString('assets/fyzical-logo.svg');
-    final gaiterLogo = await rootBundle.loadString('assets/gaiter-logo.svg');
+    final gaitrLogo = await rootBundle.loadString('assets/gaitr-logo.svg');
     //TODO final walkingChart = await rootBundle.loadString('assets/walking-chart.svg');
 
     final pdf = Document(
         title: patientData.lastname +
             patientData.firstname +
             patientData.age.toString(),
-        creator: "Gaiter Systems");
+        creator: "gaitr Systems");
 
     pdf.addPage(
       Page(
@@ -74,7 +74,7 @@ class PatientPdf {
               SizedBox(
                 height: inch,
                 child: Row(children: [
-                  SvgImage(svg: gaiterLogo, fit: BoxFit.fitHeight),
+                  SvgImage(svg: gaitrLogo, fit: BoxFit.fitHeight),
                   Spacer(),
                   SvgImage(svg: fyzLogo, fit: BoxFit.fitHeight),
                 ]),
@@ -159,7 +159,7 @@ class PatientPdf {
                     RichText(
                         text: TextSpan(
                             style: disclaimer,
-                            text: "© 2022 Gaiter Measurement Softwares")),
+                            text: "© 2022 gaitr Measurement Softwares")),
                     RichText(
                         text: TextSpan(
                             style: disclaimer,

@@ -1,19 +1,19 @@
-//TO ADD FLUTTER TO PATH, PUT THIS IN THE TERMINAL
 //export PATH=/Users/crich/Documents/flutter/bin:$PATH
 
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gaiter/cubit/cloud/amplify_cubit.dart';
-import 'package:gaiter/cubit/cloud/auth_cubit.dart';
-import 'package:gaiter/components/fancy_plasma.dart';
-import 'package:gaiter/pages/pages.dart';
+import 'package:gaitr/cubit/cloud/amplify_cubit.dart';
+import 'package:gaitr/cubit/cloud/auth_cubit.dart';
+import 'package:gaitr/components/fancy_plasma.dart';
+import 'package:gaitr/pages/pages.dart';
 
 void main() {
   runApp(const Root());
 }
 
 //TODO Ios app store (payment)
+//TODO test time recording on PDF
 //TODO TEST On IPAD
 
 class Root extends StatefulWidget {
@@ -45,7 +45,7 @@ class _RootState extends State<Root> {
                   builder: (context, state) {
                     return CupertinoApp(
                       color: CupertinoColors.systemBackground,
-                      title: 'Gaiter',
+                      title: 'gaitr',
                       builder: Authenticator.builder(),
                       routes: {
                         "/": (context) => const LandingPage(),
@@ -70,7 +70,7 @@ class _RootState extends State<Root> {
           } else {
             return CupertinoApp(
               color: CupertinoColors.systemBackground,
-              title: 'Gaiter',
+              title: 'gaitr',
               home: loadingView(),
             );
           }
@@ -87,7 +87,7 @@ class _RootState extends State<Root> {
           alignment: Alignment.bottomCenter,
           decoration: const BoxDecoration(
               image: DecorationImage(
-            image: AssetImage("gaiter-logo.png"),
+            image: AssetImage("gaitr-logo.png"),
             fit: BoxFit.fitWidth,
           )),
           child: const Padding(

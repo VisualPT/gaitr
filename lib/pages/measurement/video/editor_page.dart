@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:gaiter/models/patient_data.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_editor/video_editor.dart';
 import 'package:helpers/helpers.dart' show OpacityTransition;
+import 'package:gaitr/models/patient_data.dart';
 
 class EditorPage extends StatefulWidget {
   const EditorPage({Key? key, required this.file}) : super(key: key);

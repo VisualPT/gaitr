@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:gaiter/bloc/Timer/ticker.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:gaiter/models/patient_data.dart';
+import 'package:gaitr/models/patient_data.dart';
+import 'package:gaitr/bloc/Timer/ticker.dart';
 
 part 'timer_event.dart';
 part 'timer_state.dart';

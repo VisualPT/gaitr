@@ -1,13 +1,10 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/services.dart';
-
 import 'package:camera/camera.dart';
-
-import 'package:gaiter/pages/measurement/video/editor_page.dart';
+import 'package:gaitr/pages/measurement/video/editor_page.dart';
 
 part 'camera_state.dart';
 

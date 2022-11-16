@@ -363,7 +363,7 @@
 				DEVELOPMENT_TEAM = PHN85FQ74K;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "Runner/Info-$(CONFIGURATION).plist";
-				INFOPLIST_KEY_CFBundleDisplayName = Gaiter;
+				INFOPLIST_KEY_CFBundleDisplayName = Gaitr;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -371,7 +371,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = "";
-				PRODUCT_BUNDLE_IDENTIFIER = com.ex.gaiter;
+				PRODUCT_BUNDLE_IDENTIFIER = com.richsys.gaitr;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -498,7 +498,7 @@
 				DEVELOPMENT_TEAM = PHN85FQ74K;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "Runner/Info-$(CONFIGURATION).plist";
-				INFOPLIST_KEY_CFBundleDisplayName = Gaiter;
+				INFOPLIST_KEY_CFBundleDisplayName = Gaitr;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -507,7 +507,7 @@
 				);
 				MARKETING_VERSION = "";
 				"MARKETING_VERSION[sdk=iphoneos*]" = Testing;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ex.gaiter;
+				PRODUCT_BUNDLE_IDENTIFIER = com.richsys.gaitr;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -526,7 +526,7 @@
 				DEVELOPMENT_TEAM = PHN85FQ74K;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "Runner/Info-$(CONFIGURATION).plist";
-				INFOPLIST_KEY_CFBundleDisplayName = Gaiter;
+				INFOPLIST_KEY_CFBundleDisplayName = Gaitr;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.healthcare-fitness";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -534,7 +534,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = "";
-				PRODUCT_BUNDLE_IDENTIFIER = com.ex.gaiter;
+				PRODUCT_BUNDLE_IDENTIFIER = com.richsys.gaitr;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;

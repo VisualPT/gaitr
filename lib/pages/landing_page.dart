@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:gaiter/components/fancy_plasma.dart';
-import 'package:gaiter/models/patient_data.dart';
-import 'package:gaiter/components/patient_form.dart';
+import 'package:gaitr/components/fancy_plasma.dart';
+import 'package:gaitr/models/patient_data.dart';
+import 'package:gaitr/components/patient_form.dart';
 
 class LandingPage extends StatefulWidget {
   const LandingPage({super.key});
@@ -35,7 +35,7 @@ class _LandingPageState extends State<LandingPage> {
             alignment: Alignment.bottomCenter,
             decoration: const BoxDecoration(
                 image: DecorationImage(
-              image: AssetImage("gaiter-logo.png"),
+              image: AssetImage("gaitr-logo.png"),
               fit: BoxFit.fitWidth,
             )),
             child: Padding(

@@ -1,7 +1,7 @@
 import 'package:amplify_auth_cognito/amplify_auth_cognito.dart';
 import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gaiter/models/patient_data.dart';
+import 'package:gaitr/models/patient_data.dart';
 
 abstract class AuthState {}
 

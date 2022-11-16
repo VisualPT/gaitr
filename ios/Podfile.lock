@@ -58,24 +58,24 @@ PODS:
     - AWSS3 (~> 2.27.0)
   - AppSyncRealTimeClient (1.10.0):
     - Starscream (~> 4.0.4)
-  - AWSAuthCore (2.27.13):
-    - AWSCore (= 2.27.13)
-  - AWSCognitoIdentityProvider (2.27.13):
-    - AWSCognitoIdentityProviderASF (= 2.27.13)
-    - AWSCore (= 2.27.13)
-  - AWSCognitoIdentityProviderASF (2.27.13):
-    - AWSCore (= 2.27.13)
-  - AWSCore (2.27.13)
-  - AWSMobileClient (2.27.13):
-    - AWSAuthCore (= 2.27.13)
-    - AWSCognitoIdentityProvider (= 2.27.13)
-    - AWSCognitoIdentityProviderASF (= 2.27.13)
-    - AWSCore (= 2.27.13)
+  - AWSAuthCore (2.27.15):
+    - AWSCore (= 2.27.15)
+  - AWSCognitoIdentityProvider (2.27.15):
+    - AWSCognitoIdentityProviderASF (= 2.27.15)
+    - AWSCore (= 2.27.15)
+  - AWSCognitoIdentityProviderASF (2.27.15):
+    - AWSCore (= 2.27.15)
+  - AWSCore (2.27.15)
+  - AWSMobileClient (2.27.15):
+    - AWSAuthCore (= 2.27.15)
+    - AWSCognitoIdentityProvider (= 2.27.15)
+    - AWSCognitoIdentityProviderASF (= 2.27.15)
+    - AWSCore (= 2.27.15)
   - AWSPluginsCore (1.23.0):
     - Amplify (= 1.23.0)
     - AWSCore (~> 2.27.0)
-  - AWSS3 (2.27.13):
-    - AWSCore (= 2.27.13)
+  - AWSS3 (2.27.15):
+    - AWSCore (= 2.27.15)
   - camera (0.0.1):
     - Flutter
   - ffmpeg-kit-ios-min-gpl (4.5.1)
@@ -106,8 +106,8 @@ PODS:
     - SQLite.swift/standard (= 0.13.2)
   - SQLite.swift/standard (0.13.2)
   - Starscream (4.0.4)
-  - SwiftFormat/CLI (0.49.13)
-  - SwiftLint (0.47.1)
+  - SwiftFormat/CLI (0.50.3)
+  - SwiftLint (0.49.1)
   - video_compress (0.3.0):
     - Flutter
   - video_player_avfoundation (0.0.1):
@@ -195,13 +195,13 @@ SPEC CHECKSUMS:
   amplify_storage_s3_ios: 9f909ed387be893ee4a26b040ad1fb7212b9e14d
   AmplifyPlugins: d939707cf36dfcd53c5fd6533e842e323a2287ab
   AppSyncRealTimeClient: 656ab4215e05f6ca47fe6d8c73f416d9984a8aac
-  AWSAuthCore: 9898614783bd6375742b58a1df38c6a8b8276eda
-  AWSCognitoIdentityProvider: c105df15533a029230c325acd2be60ff45e8f3f9
-  AWSCognitoIdentityProviderASF: e0f40ef2f5c2c357b77553144e8f41a6c0b0b81b
-  AWSCore: 05edadb5f3d0b92a50ea8c66b06f1a10477878da
-  AWSMobileClient: a49361347ff5c0cff946b3f777936c0fdf9c190d
+  AWSAuthCore: 0bac0e67c28d620c8f823c88bd15d552544e801a
+  AWSCognitoIdentityProvider: a8d244d0cdfeff425fe20a2fb49b7e9cb89c4748
+  AWSCognitoIdentityProviderASF: 5dccf24b43c287eb1949e83cefccb6c25cdc04b7
+  AWSCore: c67277201b6aca10e4cf24638eadaa67c85ebf03
+  AWSMobileClient: 6f60d1fb6373e21aaada443dd4d4bf087158614d
   AWSPluginsCore: 120cfa265293694921b6595fe00d1cb5ab558847
-  AWSS3: 0ce6101e04b1c8a72eec165155e2f1da43d7229b
+  AWSS3: 09801b290f8818f532694cabd5d503c7474eb3df
   camera: 9993f92f2c793e87b65e35f3a23c70582afb05b1
   ffmpeg-kit-ios-min-gpl: da951b00628916702be2a90918181ebdcdd569ff
   ffmpeg_kit_flutter_min_gpl: 3c3266c6284c29340ac8bea41613efcdd7aea3e4
@@ -213,8 +213,8 @@ SPEC CHECKSUMS:
   printing: eafa00acb682c0ca029d4d98d0798f55a1e27102
   SQLite.swift: 4fc2be46c36392e3b87afe6fe7f1801c1daa07ef
   Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
-  SwiftFormat: 53864d9acbae3a954eb413736729500fe7051435
-  SwiftLint: f80f1be7fa96d30e0aa68e58d45d4ea1ccaac519
+  SwiftFormat: 61cda3819dc3a7d69795ce0430e1e1d53c4a4fb2
+  SwiftLint: 32ee33ded0636d0905ef6911b2b67bbaeeedafa5
   video_compress: fce97e4fb1dfd88175aa07d2ffc8a2f297f87fbe
   video_player_avfoundation: e489aac24ef5cf7af82702979ed16f2a5ef84cff
   video_thumbnail: c4e2a3c539e247d4de13cd545344fd2d26ffafd1

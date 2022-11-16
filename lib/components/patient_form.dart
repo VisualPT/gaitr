@@ -1,8 +1,7 @@
 import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
-import 'package:gaiter/models/patient_data.dart';
-import 'package:gaiter/data_helper.dart';
+import 'package:gaitr/models/patient_data.dart';
+import 'package:gaitr/data_helper.dart';
 
 class PatientForm extends StatefulWidget {
   const PatientForm(bool isVideo, {Key? key}) : super(key: key);

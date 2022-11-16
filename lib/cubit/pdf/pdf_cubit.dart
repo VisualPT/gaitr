@@ -1,10 +1,9 @@
 import 'dart:developer';
-
+import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
-import 'package:gaiter/models/patient_data.dart';
-import 'package:gaiter/components/patient_pdf.dart';
-import 'package:meta/meta.dart';
+import 'package:gaitr/models/patient_data.dart';
+import 'package:gaitr/components/patient_pdf.dart';
 
 part 'pdf_state.dart';
 

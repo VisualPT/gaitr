@@ -4,11 +4,11 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gaiter/components/consent_dialog.dart';
-import 'package:gaiter/cubit/pdf/pdf_cubit.dart';
-import 'package:gaiter/components/fancy_plasma.dart';
-import 'package:gaiter/data_helper.dart';
-import 'package:gaiter/models/patient_data.dart';
+import 'package:gaitr/components/consent_dialog.dart';
+import 'package:gaitr/cubit/pdf/pdf_cubit.dart';
+import 'package:gaitr/components/fancy_plasma.dart';
+import 'package:gaitr/data_helper.dart';
+import 'package:gaitr/models/patient_data.dart';
 import 'package:http/http.dart' as http;
 
 class ConfirmPage extends StatefulWidget {

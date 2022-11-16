@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gaiter/bloc/Timer/ticker.dart';
-import 'package:gaiter/bloc/Timer/timer_bloc.dart';
-import 'package:gaiter/components/fancy_plasma.dart';
-import 'package:gaiter/models/patient_data.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:gaitr/bloc/Timer/ticker.dart';
+import 'package:gaitr/bloc/Timer/timer_bloc.dart';
+import 'package:gaitr/components/fancy_plasma.dart';
+import 'package:gaitr/models/patient_data.dart';
 
 class StopwatchPage extends StatelessWidget {
   const StopwatchPage({super.key});
