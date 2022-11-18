@@ -1,5 +1,6 @@
 //export PATH=/Users/crich/Documents/flutter/bin:$PATH
 
+import 'dart:developer';
 import 'package:amplify_authenticator/amplify_authenticator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,9 +13,9 @@ void main() {
   runApp(const Root());
 }
 
-//TODO Ios app store (payment)
 //TODO test time recording on PDF
 //TODO TEST On IPAD
+//TODO offline case
 
 class Root extends StatefulWidget {
   const Root({Key? key}) : super(key: key);
@@ -38,31 +39,18 @@ class _RootState extends State<Root> {
         builder: (context, state) {
           if (state is AmplifyConfigured) {
             return Authenticator(
+              onException: (p0) {
+                if (p0.toString().contains(
+                    "Unexpected error occurred with message: An unknown error occurred")) {
+                  log("Likely offline");
+                }
+              },
               child: BlocProvider(
                 create: (context) => AuthCubit()..authUser(),
                 child: BlocBuilder<AuthCubit, AuthState>(
                   bloc: AuthCubit()..authUser(),
                   builder: (context, state) {
-                    return CupertinoApp(
-                      color: CupertinoColors.systemBackground,
-                      title: 'gaitr',
-                      builder: Authenticator.builder(),
-                      routes: {
-                        "/": (context) => const LandingPage(),
-                        "/confirm": (context) => const ConfirmPage(),
-                        "/settings": (context) => const SettingsPage(),
-                      },
-                      onGenerateRoute: (settings) {
-                        if (settings.name == "/measurement") {
-                          final useVideo = settings.arguments as bool;
-                          return CupertinoPageRoute(
-                              builder: (_) => useVideo
-                                  ? const VideoPage()
-                                  : const StopwatchPage());
-                        }
-                        return null;
-                      },
-                    );
+                    return buildApp(context);
                   },
                 ),
               ),
@@ -95,6 +83,28 @@ class _RootState extends State<Root> {
               child: CupertinoActivityIndicator()),
         ),
       ],
+    );
+  }
+
+  Widget buildApp(BuildContext context) {
+    return CupertinoApp(
+      color: CupertinoColors.systemBackground,
+      title: 'gaitr',
+      //TODO reset builder: Authenticator.builder(),
+      routes: {
+        "/": (context) => const LandingPage(),
+        "/pdf": (context) => const PdfPage(),
+        "/settings": (context) => const SettingsPage(),
+      },
+      onGenerateRoute: (settings) {
+        if (settings.name == "/measurement") {
+          final useVideo = settings.arguments as bool;
+          return CupertinoPageRoute(
+              builder: (_) =>
+                  useVideo ? const VideoPage() : const StopwatchPage());
+        }
+        return null;
+      },
     );
   }
 }

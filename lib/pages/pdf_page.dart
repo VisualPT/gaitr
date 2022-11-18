@@ -11,14 +11,14 @@ import 'package:gaitr/data_helper.dart';
 import 'package:gaitr/models/patient_data.dart';
 import 'package:http/http.dart' as http;
 
-class ConfirmPage extends StatefulWidget {
-  const ConfirmPage({Key? key}) : super(key: key);
+class PdfPage extends StatefulWidget {
+  const PdfPage({Key? key}) : super(key: key);
 
   @override
-  State<ConfirmPage> createState() => _ConfirmPageState();
+  State<PdfPage> createState() => _PdfPageState();
 }
 
-class _ConfirmPageState extends State<ConfirmPage> {
+class _PdfPageState extends State<PdfPage> {
   final double height = 60;
 
   @override
@@ -72,8 +72,7 @@ class _ConfirmPageState extends State<ConfirmPage> {
                                     "Are you sure you want to redo the gait analysis",
                                     "No",
                                     "Yes",
-                                    () => Navigator.popAndPushNamed(
-                                        context, "/confirm"),
+                                    () => Navigator.pop(context),
                                     () => Navigator.pushNamedAndRemoveUntil(
                                         context,
                                         '/measurement',
@@ -87,32 +86,18 @@ class _ConfirmPageState extends State<ConfirmPage> {
                               color: CupertinoColors.link,
                               onPressed: () {
                                 consentDialog(
-                                  context,
-                                  "Save patient gait data",
-                                  "Are you sure you want to proceed",
-                                  "No",
-                                  "Yes",
-                                  () => Navigator.pop(context),
-                                  () {
-                                    patientData.rawReportData =
-                                        uint8ListTob64(state.pdfView.pdfData!)
-                                            .toString();
-                                    sendEmail().then(
-                                      (response) {
-                                        log(response.body);
-                                        if (response.body == 'OK') {
-                                          Navigator.pushNamedAndRemoveUntil(
-                                            context,
-                                            '/',
-                                            ModalRoute.withName('/'),
-                                          );
-                                        } else {
-                                          log("error sending email");
-                                        }
-                                      },
-                                    );
-                                  },
-                                );
+                                    context,
+                                    "Save patient gait data",
+                                    "Are you sure you want to proceed",
+                                    "No",
+                                    "Yes",
+                                    () => Navigator.pop(context), () {
+                                  try {
+                                    prepareEmail(context, state);
+                                  } catch (e) {
+                                    log(e.toString());
+                                  }
+                                });
                               },
                               child: const Text("Save"),
                             )
@@ -141,29 +126,55 @@ class _ConfirmPageState extends State<ConfirmPage> {
       ),
     );
   }
+
+  void prepareEmail(BuildContext context, PdfLoaded state) {
+    patientData.rawReportData =
+        uint8ListTob64(state.pdfView.pdfData!).toString();
+
+    sendEmail().then(
+      (response) {
+        log(response.body);
+        if (response.body == 'OK') {
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            '/',
+            ModalRoute.withName('/'),
+          );
+        }
+      },
+    );
+  }
 }
 
+//TODO check if online before doing this
 Future<http.Response> sendEmail() async {
   const serviceId = "service_1j62fhe";
   const templateId = "template_95smzbm";
   const userId = "_SUuxjVW52hmODTRs";
 
   final url = Uri.parse("https://api.emailjs.com/api/v1.0/email/send");
-  return await http.post(
-    url,
-    headers: {'origin': 'http://localhost', 'Content-type': 'application/json'},
-    body: json.encode(
-      {
-        'service_id': serviceId,
-        'template_id': templateId,
-        'user_id': userId,
-        'template_params': {
-          'patient_name': "${patientData.firstname} ${patientData.lastname}",
-          'patient_dob': patientData.bday,
-          'user_email': patientData.managingtherapistEmail,
-          'patient_pdf': patientData.rawReportData,
-        }
+  try {
+    return await http.post(
+      url,
+      headers: {
+        'origin': 'http://localhost',
+        'Content-type': 'application/json'
       },
-    ),
-  );
+      body: json.encode(
+        {
+          'service_id': serviceId,
+          'template_id': templateId,
+          'user_id': userId,
+          'template_params': {
+            'patient_name': "${patientData.firstname} ${patientData.lastname}",
+            'patient_dob': patientData.bday,
+            'user_email': patientData.managingtherapistEmail,
+            'patient_pdf': patientData.rawReportData,
+          }
+        },
+      ),
+    );
+  } catch (e) {
+    return http.Response(e.toString(), 404);
+  }
 }

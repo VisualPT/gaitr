@@ -14,7 +14,6 @@ class _PatientFormState extends State<PatientForm> {
   // Create a global key that uniquely identifies the Form widget
   // and allows validation of the form.
   final _formKey = GlobalKey<FormState>();
-  late String measurementRoute = '/video';
 
   @override
   Widget build(BuildContext context) {
@@ -23,11 +22,8 @@ class _PatientFormState extends State<PatientForm> {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(right: 20.0),
-              child: patientData.isVideo
-                  ? const Icon(CupertinoIcons.video_camera)
-                  : const Icon(CupertinoIcons.stopwatch),
+            Text(
+              patientData.isVideo ? "Record " : "    Time ",
             ),
             const Text("New Patient"),
           ],
