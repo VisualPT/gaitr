@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:gaitr/components/consent_dialog.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_editor/video_editor.dart';
 import 'package:helpers/helpers.dart' show OpacityTransition;
@@ -47,7 +48,7 @@ class _EditorPageState extends State<EditorPage> {
   }
 
   @override
-  //TODO show the total measurement time at all times
+  //TODO CHECK show the total measurement time at all times
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
@@ -125,7 +126,15 @@ class _EditorPageState extends State<EditorPage> {
                               onPressed: () {
                                 _editorController.video.pause().then((_) {
                                   logGaitVelocityStats(_editorController.video);
-                                  Navigator.pushNamed(context, '/confirm');
+                                  consentDialog(
+                                      context,
+                                      "Save Sample?",
+                                      "Final time was ${formatter(_editorController.videoDuration)} seconds",
+                                      "No",
+                                      "Yes",
+                                      () => Navigator.pop(context),
+                                      () =>
+                                          Navigator.pushNamed(context, '/pdf'));
                                 });
                               }),
                         ],
@@ -136,7 +145,7 @@ class _EditorPageState extends State<EditorPage> {
                 AnimatedBuilder(
                   animation: _editorController.video,
                   builder: (_, __) => OpacityTransition(
-                    visible: !_editorController.isPlaying,
+                    visible: true,
                     child: GestureDetector(
                       onTap: _editorController.video.play,
                       child: Container(

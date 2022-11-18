@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gaitr/components/consent_dialog.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:gaitr/bloc/Timer/ticker.dart';
 import 'package:gaitr/bloc/Timer/timer_bloc.dart';
@@ -99,7 +100,16 @@ class Actions extends StatelessWidget {
                     context
                         .read<TimerBloc>()
                         .add(TimerReset(duration: state.duration));
-                    Navigator.pushNamed(context, "/confirm");
+                    consentDialog(
+                        context,
+                        "Save Sample?",
+                        "Final time is ${formatter(state.duration)} seconds",
+                        "No",
+                        "Yes", () {
+                      context.read<TimerBloc>().add(
+                          const TimerReset(duration: Duration(seconds: 0)));
+                      Navigator.pop(context);
+                    }, () => Navigator.pushNamed(context, '/pdf'));
                   });
             }
           }(),
