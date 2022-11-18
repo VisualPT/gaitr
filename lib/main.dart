@@ -15,6 +15,7 @@ void main() {
 
 //TODO test time recording on PDF
 //TODO TEST On IPAD
+//TODO gaitr on amplify
 //TODO offline case
 
 class Root extends StatefulWidget {
@@ -90,7 +91,7 @@ class _RootState extends State<Root> {
     return CupertinoApp(
       color: CupertinoColors.systemBackground,
       title: 'gaitr',
-      //TODO reset builder: Authenticator.builder(),
+      builder: Authenticator.builder(),
       routes: {
         "/": (context) => const LandingPage(),
         "/pdf": (context) => const PdfPage(),
