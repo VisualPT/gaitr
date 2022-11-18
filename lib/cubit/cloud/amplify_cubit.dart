@@ -31,21 +31,20 @@ class AmplifyCubit extends Cubit<AmplifyState> {
       final AmplifyAPI _apiPlugin = AmplifyAPI();
       final AmplifyAuthCognito _authPlugin = AmplifyAuthCognito();
       final AmplifyStorageS3 _storagePlugin = AmplifyStorageS3();
-      try {
-        await Amplify.addPlugins(
-            [_dataStorePlugin, _apiPlugin, _authPlugin, _storagePlugin]);
-        await Amplify.configure(amplifyconfig).then((value) {
-          kDebugMode ? _verboseLogging() : null;
-          Amplify.Auth.fetchAuthSession().then(((session) {
-            configProd();
-            emit(AmplifyConfigured());
-          }));
-        });
-      } on AmplifyAlreadyConfiguredException {
-        emit(AmplifyFailure(
-            exception: Exception(
-                'Tried to reconfigure Amplify; this can occur when your app restarts on Android. To solve: Reset App.')));
-      }
+
+      await Amplify.addPlugins(
+          [_dataStorePlugin, _apiPlugin, _authPlugin, _storagePlugin]);
+      await Amplify.configure(amplifyconfig).then((value) {
+        kDebugMode ? _verboseLogging() : null;
+        Amplify.Auth.fetchAuthSession().then(((session) {
+          configProd();
+          emit(AmplifyConfigured());
+        }));
+      });
+    } on AmplifyAlreadyConfiguredException {
+      emit(AmplifyFailure(
+          exception: Exception(
+              'Reset Gaitr to refresh the back end services.')));
     } on Exception catch (e) {
       log(e.toString());
       emit(AmplifyFailure(exception: e));
