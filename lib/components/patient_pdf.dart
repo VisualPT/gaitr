@@ -52,7 +52,8 @@ class PatientPdf {
     await configPdfStyles();
     final fyzLogo = await rootBundle.loadString('assets/fyzical-logo.svg');
     final gaitrLogo = await rootBundle.loadString('assets/gaitr-logo.svg');
-    //TODO final walkingChart = await rootBundle.loadString('assets/walking-chart.svg');
+    final walkingChart =
+        await rootBundle.loadString('assets/walking-chart.svg');
 
     final pdf = Document(
         title: patientData.lastname +
@@ -139,7 +140,10 @@ class PatientPdf {
               ])),
             ]),
             Spacer(),
-            //TODO SvgImage(svg: walkingChart, fit: BoxFit.fitWidth),
+            SizedBox(
+              height: 3 * inch,
+              child: SvgImage(svg: walkingChart, fit: BoxFit.fitWidth),
+            ),
             Spacer(),
             RichText(
               textAlign: TextAlign.center,
