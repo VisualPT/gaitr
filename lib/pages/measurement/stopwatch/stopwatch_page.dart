@@ -119,5 +119,5 @@ class Actions extends StatelessWidget {
 
 String formatter(Duration duration) => [
       duration.inSeconds.remainder(60).toString().padLeft(2, '0'),
-      duration.inMilliseconds.remainder(60).toString().padLeft(2, '0')[0]
+      duration.inMilliseconds.remainder(1000).toString().padLeft(3, '0')[0]
     ].join(".");
