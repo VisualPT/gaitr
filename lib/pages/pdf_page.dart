@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gaitr/components/consent_dialog.dart';
 import 'package:gaitr/cubit/pdf/pdf_cubit.dart';
 import 'package:gaitr/components/fancy_plasma.dart';
-import 'package:gaitr/data_helper.dart';
 import 'package:gaitr/models/patient_data.dart';
 import 'package:http/http.dart' as http;
 
@@ -177,4 +176,10 @@ Future<http.Response> sendEmail() async {
   } catch (e) {
     return http.Response(e.toString(), 404);
   }
+}
+
+String uint8ListTob64(Uint8List uint8list) {
+  String base64String = base64Encode(uint8list);
+  String header = 'data:application/pdf;base64,';
+  return header + base64String;
 }

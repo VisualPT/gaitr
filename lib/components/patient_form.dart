@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:gaitr/models/patient_data.dart';
-import 'package:gaitr/data_helper.dart';
 
 class PatientForm extends StatefulWidget {
   const PatientForm(bool isVideo, {Key? key}) : super(key: key);
@@ -147,6 +146,20 @@ void storeValue(String field, String? value) {
       default:
         throw Exception("Invalid field or value used");
     }
+  } catch (e) {
+    log(e.toString());
+  }
+}
+
+///Input string is in format MM/DD/YYYY , returns a DateTime instance
+stringToDateTime(String birthdate) {
+  try {
+    final int year = int.parse(
+        birthdate.substring(birthdate.lastIndexOf('/') + 1, birthdate.length));
+    final int month = int.parse(birthdate.substring(
+        birthdate.indexOf('/') + 1, birthdate.lastIndexOf('/')));
+    final int day = int.parse(birthdate.substring(0, birthdate.indexOf('/')));
+    return DateTime(year, month, day);
   } catch (e) {
     log(e.toString());
   }
