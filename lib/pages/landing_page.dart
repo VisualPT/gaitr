@@ -27,17 +27,22 @@ class _LandingPageState extends State<LandingPage> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      //TODO be smarter with this
       onTapDown: ((_) => setPreferences()),
       child: Stack(
+        alignment: Alignment.topCenter,
         children: [
+          //TODO set to fyzical colors
           FancyPlasmaWidget(color: CupertinoColors.systemBlue.withOpacity(0.4)),
           Container(
-            alignment: Alignment.bottomCenter,
+            alignment: Alignment.topCenter,
             decoration: const BoxDecoration(
-                image: DecorationImage(
-              image: AssetImage("gaitr-logo.png"),
-              fit: BoxFit.fitWidth,
-            )),
+              image: DecorationImage(
+                image: AssetImage(
+                  "gaitr-logo.png",
+                ),
+              ),
+            ),
             child: Padding(
               padding: const EdgeInsets.all(15.0),
               child: SafeArea(
@@ -54,22 +59,10 @@ class _LandingPageState extends State<LandingPage> {
                         ),
                       ],
                     ),
-                    SizedBox(height: MediaQuery.of(context).size.height / 2),
-                    const Spacer(flex: 4),
+                    SizedBox(height: MediaQuery.of(context).size.height / 3),
+                    const Spacer(flex: 3),
+                    ...measurementMethodToggle(),
                     PatientForm(patientData.isVideo),
-                    const Spacer(),
-                    CupertinoSwitch(
-                      value: patientData.isVideo,
-                      onChanged: (bool value) {
-                        setState(() {
-                          patientData.isVideo = value;
-                        });
-                      },
-                    ),
-                    const Text('Toggle Measurement Method',
-                        style: TextStyle(
-                            color: CupertinoColors.label,
-                            fontWeight: FontWeight.bold)),
                   ],
                 ),
               ),
@@ -78,5 +71,56 @@ class _LandingPageState extends State<LandingPage> {
         ],
       ),
     );
+  }
+
+  List<Widget> measurementMethodToggle() {
+    return [
+      const Text('How will you test today?',
+          style: TextStyle(
+              color: CupertinoColors.label, fontWeight: FontWeight.bold)),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Spacer(),
+            CupertinoButton(
+              child: Icon(
+                CupertinoIcons.videocam_circle,
+                semanticLabel: "Video Camera Icon",
+                size: patientData.isVideo ? 128.0 : 72.0,
+                color: patientData.isVideo
+                    ? CupertinoColors.activeBlue
+                    : CupertinoColors.inactiveGray,
+                shadows: const [
+                  Shadow(blurRadius: 50.0),
+                  Shadow(blurRadius: 10.0, offset: Offset(3, 4))
+                ],
+              ),
+              onPressed: () => setState(() => patientData.isVideo = true),
+            ),
+            const Spacer(),
+            CupertinoButton(
+              child: Icon(
+                CupertinoIcons.stopwatch,
+                semanticLabel: "Stop Watch Icon",
+                size: patientData.isVideo ? 72.0 : 128.0,
+                color: patientData.isVideo
+                    ? CupertinoColors.inactiveGray
+                    : CupertinoColors.activeBlue,
+                shadows: const [
+                  Shadow(blurRadius: 50.0),
+                  Shadow(blurRadius: 10.0, offset: Offset(3, 4))
+                ],
+              ),
+              onPressed: () => setState(
+                () => patientData.isVideo = false,
+              ),
+            ),
+            const Spacer(),
+          ],
+        ),
+      ),
+    ];
   }
 }
