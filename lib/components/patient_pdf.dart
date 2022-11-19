@@ -39,12 +39,13 @@ class PatientPdf {
 
     borderSide = BorderSide(width: 2, color: secondaryColor);
 
-    header = TextStyle(font: boldFont, fontSize: 30.0);
-    headerItalic = TextStyle(font: boldItalicFont, fontSize: 30.0);
-    detail = TextStyle(font: baseFont, fontSize: 15.0);
-    detailBold = TextStyle(font: boldFont, fontSize: 15.0);
-    subHeader = TextStyle(font: boldFont, fontSize: 50.0);
-    disclaimer = TextStyle(font: baseFont, fontSize: 10.0);
+    header = TextStyle(font: boldFont, fontSize: 30.0, lineSpacing: 2.0);
+    headerItalic =
+        TextStyle(font: boldItalicFont, fontSize: 30.0, lineSpacing: 2.0);
+    detail = TextStyle(font: baseFont, fontSize: 15.0, lineSpacing: 2.0);
+    detailBold = TextStyle(font: boldFont, fontSize: 15.0, lineSpacing: 2.0);
+    subHeader = TextStyle(font: boldFont, fontSize: 50.0, lineSpacing: 2.0);
+    disclaimer = TextStyle(font: baseFont, fontSize: 10.0, lineSpacing: 2.0);
     return;
   }
 
@@ -91,13 +92,13 @@ class PatientPdf {
             ])),
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               RichText(
-                text: TextSpan(children: [
-                  TextSpan(text: "Sampled on: ", style: detail),
-                  TextSpan(text: patientData.date, style: detailBold),
-                  TextSpan(text: " at ", style: detail),
-                  TextSpan(text: patientData.time, style: detailBold),
-                ]),
-              ),
+                  text: TextSpan(children: [
+                TextSpan(text: "Sampled on: ", style: detail),
+                TextSpan(text: patientData.date, style: detailBold),
+                TextSpan(text: " at ", style: detail),
+                TextSpan(text: patientData.time, style: detailBold),
+              ])),
+              Spacer(),
               RichText(
                 text: TextSpan(children: [
                   TextSpan(text: "Patient Name: ", style: detail),
@@ -106,6 +107,7 @@ class PatientPdf {
                       style: detailBold),
                 ]),
               ),
+              Spacer(),
               RichText(
                 text: TextSpan(children: [
                   TextSpan(text: "Birth Date: ", style: detail),
@@ -115,6 +117,7 @@ class PatientPdf {
                   TextSpan(text: " y/o)", style: detail),
                 ]),
               ),
+              Spacer(),
               RichText(
                 text: TextSpan(children: [
                   TextSpan(text: "Measurement Method: ", style: detail),
@@ -123,16 +126,18 @@ class PatientPdf {
                       style: detailBold),
                 ]),
               ),
+              Spacer(),
               RichText(
                 text: TextSpan(children: [
                   TextSpan(
-                      text: "Measurement Duration (ss:ms): ", style: detail),
+                      text: "Measurement Duration (ss.ms): ", style: detail),
                   TextSpan(
                       text: patientData.measurementDuration
                           .toStringAsPrecision(3),
                       style: detailBold),
                 ]),
               ),
+              Spacer(),
               RichText(
                   text: TextSpan(children: [
                 TextSpan(text: "Gait Velocity (m/s): ", style: detail),
@@ -141,8 +146,24 @@ class PatientPdf {
             ]),
             Spacer(),
             SizedBox(
-              height: 3 * inch,
-              child: SvgImage(svg: walkingChart, fit: BoxFit.fitWidth),
+              height: 4 * inch,
+              child: Center(
+                child: Stack(children: [
+                  SvgImage(svg: walkingChart, fit: BoxFit.fill, clip: false),
+                  Positioned(
+                    left: positioner(patientData.velocity),
+                    child: Container(
+                      height: 4.5 * inch,
+                      width: 0.01 * inch,
+                      decoration:
+                          //TODO fyz colors
+                          BoxDecoration(
+                        color: PdfColor.fromRYB(0, 0, 1, 0.3),
+                      ),
+                    ),
+                  )
+                ]),
+              ),
             ),
             Spacer(),
             RichText(
@@ -195,6 +216,11 @@ class PatientPdf {
     );
     return pdf.save();
   }
+
+//TODO debug
+  double positioner(String velocity) =>
+      (double.parse(velocity) * (2.57 + 1.7) * inch)
+          .clamp(1.7 * inch, 5.2 * inch);
 }
 
 // final file =

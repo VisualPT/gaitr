@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gaitr/components/consent_dialog.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:gaitr/bloc/Timer/ticker.dart';
 import 'package:gaitr/bloc/Timer/timer_bloc.dart';
 import 'package:gaitr/components/fancy_plasma.dart';
@@ -118,6 +119,6 @@ class Actions extends StatelessWidget {
 }
 
 String formatter(Duration duration) => [
-      duration.inSeconds.remainder(60).toString().padLeft(2, '0'),
+      duration.inSeconds.remainder(99).toString().padLeft(2, '0'),
       duration.inMilliseconds.remainder(1000).toString().padLeft(3, '0')[0]
     ].join(".");

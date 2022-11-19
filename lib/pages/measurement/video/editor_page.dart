@@ -169,7 +169,7 @@ class _EditorPageState extends State<EditorPage> {
   }
 
   String formatter(Duration duration) => [
-        duration.inSeconds.remainder(60).toString().padLeft(2, '0'),
-        duration.inMilliseconds.remainder(60).toString().padLeft(2, '0')
-      ].join(":");
+        duration.inSeconds.remainder(99).toString().padLeft(2, '0'),
+        duration.inMilliseconds.remainder(1000).toString().padLeft(3, '0')[0]
+      ].join(".");
 }
