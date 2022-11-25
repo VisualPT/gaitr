@@ -13,10 +13,11 @@ void main() {
   runApp(const Root());
 }
 
-//TODO test time recording on PDF
 //TODO TEST On IPAD
 //TODO gaitr on amplify
 //TODO offline case
+//TODO add 10 feet option
+//TODO update email template
 
 class Root extends StatefulWidget {
   const Root({Key? key}) : super(key: key);
@@ -26,11 +27,7 @@ class Root extends StatefulWidget {
 }
 
 class _RootState extends State<Root> {
-  @override
-  void initState() {
-    super.initState();
-    //configureAmplify();
-  }
+
 
   @override
   Widget build(BuildContext context) {
