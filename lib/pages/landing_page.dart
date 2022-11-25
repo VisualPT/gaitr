@@ -32,8 +32,7 @@ class _LandingPageState extends State<LandingPage> {
       child: Stack(
         alignment: Alignment.topCenter,
         children: [
-          //TODO set to fyzical colors
-          FancyPlasmaWidget(color: CupertinoColors.systemBlue.withOpacity(0.4)),
+          const FancyPlasmaWidget(color: Color(0xFF71C5E8)),
           Container(
             alignment: Alignment.topCenter,
             decoration: const BoxDecoration(

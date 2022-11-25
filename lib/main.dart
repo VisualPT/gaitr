@@ -14,7 +14,7 @@ void main() {
 }
 
 //TODO TEST On IPAD
-//TODO gaitr on amplify
+//TODO indexer on editor page
 //TODO offline case
 //TODO add 10 feet option
 //TODO update email template
@@ -68,7 +68,7 @@ class _RootState extends State<Root> {
   Widget loadingView() {
     return Stack(
       children: [
-        FancyPlasmaWidget(color: CupertinoColors.systemBlue.withOpacity(0.4)),
+        const FancyPlasmaWidget(color: Color(0xFF71C5E8)),
         Container(
           alignment: Alignment.bottomCenter,
           decoration: const BoxDecoration(
