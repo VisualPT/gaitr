@@ -18,8 +18,8 @@ class FancyPlasmaWidget extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Color.fromARGB(255, 9, 123, 55),
-            Color.fromARGB(255, 3, 52, 91),
+            Color(0xFF0091DA),
+            Color(0xFF1B365D),
           ],
           stops: [
             0,

@@ -68,7 +68,8 @@ class PatientPdf {
           pageFormat: PdfPageFormat.letter,
           margin: EdgeInsets.all(halfinch),
         ),
-        build: (Context context) => Center(
+        build: (Context context) => SizedBox(
+          height: 11 * inch,
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Header(
@@ -90,80 +91,105 @@ class PatientPdf {
                   ),
                   overflow: TextOverflow.span),
             ])),
-            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              RichText(
-                  text: TextSpan(children: [
-                TextSpan(text: "Sampled on: ", style: detail),
-                TextSpan(text: patientData.date, style: detailBold),
-                TextSpan(text: " at ", style: detail),
-                TextSpan(text: patientData.time, style: detailBold),
-              ])),
-              Spacer(),
-              RichText(
-                text: TextSpan(children: [
-                  TextSpan(text: "Patient Name: ", style: detail),
-                  TextSpan(
-                      text: "${patientData.firstname} ${patientData.lastname}",
-                      style: detailBold),
-                ]),
-              ),
-              Spacer(),
-              RichText(
-                text: TextSpan(children: [
-                  TextSpan(text: "Birth Date: ", style: detail),
-                  TextSpan(text: patientData.bday, style: detailBold),
-                  TextSpan(text: " (", style: detail),
-                  TextSpan(text: patientData.age, style: detailBold),
-                  TextSpan(text: " y/o)", style: detail),
-                ]),
-              ),
-              Spacer(),
-              RichText(
-                text: TextSpan(children: [
-                  TextSpan(text: "Measurement Method: ", style: detail),
-                  TextSpan(
-                      text: patientData.isVideo ? "video" : "stopwatch",
-                      style: detailBold),
-                ]),
-              ),
-              Spacer(),
-              RichText(
-                text: TextSpan(children: [
-                  TextSpan(
-                      text: "Measurement Duration (ss.ms): ", style: detail),
-                  TextSpan(
-                      text: patientData.measurementDuration
-                          .toStringAsPrecision(3),
-                      style: detailBold),
-                ]),
-              ),
-              Spacer(),
-              RichText(
-                  text: TextSpan(children: [
-                TextSpan(text: "Gait Velocity (m/s): ", style: detail),
-                TextSpan(text: patientData.velocity, style: detailBold),
-              ])),
-            ]),
+            SizedBox(
+              height: 3 * inch,
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RichText(
+                        text: TextSpan(children: [
+                      TextSpan(text: "Sampled on: ", style: detail),
+                      TextSpan(text: patientData.date, style: detailBold),
+                      TextSpan(text: " at ", style: detail),
+                      TextSpan(text: patientData.time, style: detailBold),
+                    ])),
+                    Spacer(),
+                    RichText(
+                      text: TextSpan(children: [
+                        TextSpan(text: "Patient Name: ", style: detail),
+                        TextSpan(
+                            text:
+                                "${patientData.firstname} ${patientData.lastname}",
+                            style: detailBold),
+                      ]),
+                    ),
+                    Spacer(),
+                    RichText(
+                      text: TextSpan(children: [
+                        TextSpan(text: "Birth Date: ", style: detail),
+                        TextSpan(text: patientData.bday, style: detailBold),
+                        TextSpan(text: " (", style: detail),
+                        TextSpan(text: patientData.age, style: detailBold),
+                        TextSpan(text: " y/o)", style: detail),
+                      ]),
+                    ),
+                    Spacer(),
+                    RichText(
+                      text: TextSpan(children: [
+                        TextSpan(text: "Measurement Method: ", style: detail),
+                        TextSpan(
+                            text: patientData.isVideo ? "video" : "stopwatch",
+                            style: detailBold),
+                      ]),
+                    ),
+                    Spacer(),
+                    RichText(
+                      text: TextSpan(children: [
+                        TextSpan(
+                            text: "Measurement Duration (ss.ms): ",
+                            style: detail),
+                        TextSpan(
+                            text: patientData.measurementDuration
+                                .toStringAsPrecision(3),
+                            style: detailBold),
+                      ]),
+                    ),
+                    Spacer(),
+                    RichText(
+                        text: TextSpan(children: [
+                      TextSpan(text: "Gait Velocity (m/s): ", style: detail),
+                      TextSpan(text: patientData.velocity, style: detailBold),
+                    ])),
+                  ]),
+            ),
             Spacer(),
             SizedBox(
               height: 4 * inch,
-              child: Center(
-                child: Stack(children: [
-                  SvgImage(svg: walkingChart, fit: BoxFit.fill, clip: false),
-                  Positioned(
-                    left: positioner(patientData.velocity),
-                    child: Container(
-                      height: 4.5 * inch,
-                      width: 0.01 * inch,
-                      decoration:
-                          //TODO fyz colors
-                          BoxDecoration(
-                        color: PdfColor.fromRYB(0, 0, 1, 0.3),
-                      ),
+              width: 3 * inch,
+              child: Stack(children: [
+                Container(
+                    height: inch * 2,
+                    width: inch * 3,
+                    foregroundDecoration: BoxDecoration(
+                      gradient: LinearGradient(colors: [
+                        PdfColor.fromHex("#1b365d"),
+                        PdfColor.fromHex("#1d3d68"),
+                        PdfColor.fromHex("#1f4573"),
+                        PdfColor.fromHex("#214d7e"),
+                        PdfColor.fromHex("#225589"),
+                        PdfColor.fromHex("#22659f"),
+                        PdfColor.fromHex("#206eab"),
+                        PdfColor.fromHex("#1d76b7"),
+                        PdfColor.fromHex("#197fc2"),
+                        PdfColor.fromHex("#1088ce"),
+                        PdfColor.fromHex("#0091da"),
+                      ]),
                     ),
-                  )
-                ]),
-              ),
+                    child: Text("Test")),
+                // SvgImage(svg: walkingChart, fit: BoxFit.fill, clip: false),
+                // Positioned(
+                //   left: positioner(patientData.velocity),
+                //   child: Container(
+                //     height: 4.5 * inch,
+                //     width: 0.01 * inch,
+                //     decoration:
+                //         //TODO fyz colors
+                //         BoxDecoration(
+                //       color: PdfColor.fromRYB(0, 0, 1, 0.3),
+                //     ),
+                //   ),
+                // )
+              ]),
             ),
             Spacer(),
             RichText(

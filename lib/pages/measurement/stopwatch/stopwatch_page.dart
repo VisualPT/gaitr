@@ -83,8 +83,8 @@ class Actions extends StatelessWidget {
             if (state is TimerInitial) {
               return CupertinoButton(
                 padding: EdgeInsets.zero,
-                child: Icon(CupertinoIcons.play_circle,
-                    color: CupertinoColors.systemGreen.darkColor),
+                child: const Icon(CupertinoIcons.play_circle,
+                    color: CupertinoColors.black),
                 onPressed: () => context
                     .read<TimerBloc>()
                     .add(TimerStarted(duration: state.duration)),
