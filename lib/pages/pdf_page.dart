@@ -34,7 +34,7 @@ class _PdfPageState extends State<PdfPage> {
       child: Stack(
         alignment: Alignment.topCenter,
         children: [
-          FancyPlasmaWidget(color: CupertinoColors.systemBlue.withOpacity(0.4)),
+          const FancyPlasmaWidget(),
           BlocProvider(
             create: (context) => PdfCubit()..initPDFView(),
             child: BlocBuilder<PdfCubit, PdfState>(

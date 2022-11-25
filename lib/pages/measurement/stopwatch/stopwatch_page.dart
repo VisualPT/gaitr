@@ -17,8 +17,7 @@ class StopwatchPage extends StatelessWidget {
         create: (_) => TimerBloc(ticker: const Ticker()),
         child: CupertinoPageScaffold(
           child: Stack(alignment: Alignment.topCenter, children: [
-            FancyPlasmaWidget(
-                color: CupertinoColors.systemBlue.withOpacity(0.4)),
+            const FancyPlasmaWidget(),
             SafeArea(
               child: Text(
                 "${patientData.firstname} ${patientData.lastname} Gait Eval",

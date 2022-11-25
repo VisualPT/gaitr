@@ -2,12 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:simple_animations/simple_animations.dart';
 
 class FancyPlasmaWidget extends StatelessWidget {
-  const FancyPlasmaWidget({
-    Key? key,
-    required this.color,
-  }) : super(key: key);
-
-  final Color color;
+  const FancyPlasmaWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +26,7 @@ class FancyPlasmaWidget extends StatelessWidget {
       child: PlasmaRenderer(
         type: PlasmaType.infinity,
         particles: 10,
-        color: color,
+        color: CupertinoColors.systemBlue.withOpacity(0.4),
         blur: 0.4,
         size: 1,
         speed: 6.35,
@@ -40,7 +35,7 @@ class FancyPlasmaWidget extends StatelessWidget {
         variation1: 0,
         variation2: 0,
         variation3: 0,
-        rotation: 0,
+        rotation: 3.14 / 2,
       ),
     );
   }

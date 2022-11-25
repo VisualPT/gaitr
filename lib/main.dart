@@ -27,8 +27,6 @@ class Root extends StatefulWidget {
 }
 
 class _RootState extends State<Root> {
-
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -68,7 +66,7 @@ class _RootState extends State<Root> {
   Widget loadingView() {
     return Stack(
       children: [
-        const FancyPlasmaWidget(color: Color(0xFF71C5E8)),
+        const FancyPlasmaWidget(),
         Container(
           alignment: Alignment.bottomCenter,
           decoration: const BoxDecoration(

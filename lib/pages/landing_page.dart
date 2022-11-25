@@ -32,7 +32,7 @@ class _LandingPageState extends State<LandingPage> {
       child: Stack(
         alignment: Alignment.topCenter,
         children: [
-          const FancyPlasmaWidget(color: Color(0xFF71C5E8)),
+          const FancyPlasmaWidget(),
           Container(
             alignment: Alignment.topCenter,
             decoration: const BoxDecoration(
