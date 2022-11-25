@@ -53,8 +53,6 @@ class PatientPdf {
     await configPdfStyles();
     final fyzLogo = await rootBundle.loadString('assets/fyzical-logo.svg');
     final gaitrLogo = await rootBundle.loadString('assets/gaitr-logo.svg');
-    final walkingChart =
-        await rootBundle.loadString('assets/walking-chart.svg');
 
     final pdf = Document(
         title: patientData.lastname +
@@ -153,44 +151,69 @@ class PatientPdf {
                   ]),
             ),
             Spacer(),
-            SizedBox(
-              height: 4 * inch,
-              width: 3 * inch,
-              child: Stack(children: [
-                Container(
-                    height: inch * 2,
-                    width: inch * 3,
-                    foregroundDecoration: BoxDecoration(
-                      gradient: LinearGradient(colors: [
-                        PdfColor.fromHex("#1b365d"),
-                        PdfColor.fromHex("#1d3d68"),
-                        PdfColor.fromHex("#1f4573"),
-                        PdfColor.fromHex("#214d7e"),
-                        PdfColor.fromHex("#225589"),
-                        PdfColor.fromHex("#22659f"),
-                        PdfColor.fromHex("#206eab"),
-                        PdfColor.fromHex("#1d76b7"),
-                        PdfColor.fromHex("#197fc2"),
-                        PdfColor.fromHex("#1088ce"),
-                        PdfColor.fromHex("#0091da"),
-                      ]),
+            Center(
+              child: Stack(
+                alignment: Alignment.centerLeft,
+                children: [
+                  SizedBox(
+                    height: inch * 1,
+                    width: inch * 6,
+                    child: Column(children: [
+                      Container(
+                        height: inch * 0.25,
+                        width: inch * 6,
+                        foregroundDecoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              PdfColor.fromHex("#1b365d"),
+                              PdfColor.fromHex("#1d3d68"),
+                              PdfColor.fromHex("#1f4573"),
+                              PdfColor.fromHex("#214d7e"),
+                              PdfColor.fromHex("#225589"),
+                              PdfColor.fromHex("#22659f"),
+                              PdfColor.fromHex("#206eab"),
+                              PdfColor.fromHex("#1d76b7"),
+                              PdfColor.fromHex("#197fc2"),
+                              PdfColor.fromHex("#1088ce"),
+                              PdfColor.fromHex("#0091da"),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Row(
+                        children: axisLabel(),
+                      ),
+                      RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                            style: disclaimer, text: "Gait Velocity (m/s)"),
+                      ),
+                      Spacer(),
+                      RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                            style: detailBold,
+                            text: double.parse(patientData.velocity) < 1
+                                ? "Needs intervention to reduce risk of fall"
+                                : "Less likely to experience risk of fall"),
+                      ),
+                    ]),
+                  ),
+                  Positioned(
+                    top: 0.1,
+                    left: positioner(patientData.velocity),
+                    child: Container(
+                      height: 0.25 * inch,
+                      width: 0.25 * inch,
+                      decoration: BoxDecoration(
+                          color: PdfColor.fromRYB(1, 0, 0),
+                          shape: BoxShape.circle),
                     ),
-                    child: Text("Test")),
-                // SvgImage(svg: walkingChart, fit: BoxFit.fill, clip: false),
-                // Positioned(
-                //   left: positioner(patientData.velocity),
-                //   child: Container(
-                //     height: 4.5 * inch,
-                //     width: 0.01 * inch,
-                //     decoration:
-                //         //TODO fyz colors
-                //         BoxDecoration(
-                //       color: PdfColor.fromRYB(0, 0, 1, 0.3),
-                //     ),
-                //   ),
-                // )
-              ]),
+                  ),
+                ],
+              ),
             ),
+
             Spacer(),
             RichText(
               textAlign: TextAlign.center,
@@ -243,12 +266,16 @@ class PatientPdf {
     return pdf.save();
   }
 
-//TODO debug
-  double positioner(String velocity) =>
-      (double.parse(velocity) * (2.57 + 1.7) * inch)
-          .clamp(1.7 * inch, 5.2 * inch);
-}
+  List<Widget> axisLabel() {
+    final values = List<double>.generate(9, (i) => i * 0.2)
+        .map<Text>((value) => value >= 1.0
+            ? Text(value.toStringAsPrecision(2))
+            : Text(value.toStringAsPrecision(1)))
+        .toList();
+    return List<Widget>.generate(
+        17, (i) => i % 2 == 0 ? values[i ~/ 2] : Spacer());
+  }
 
-// final file =
-//     File(userData["Last Name"] + userData["FirstName"] + userData["Age"]);
-// await file.writeAsBytes(await pdf.save());
+  double positioner(String velocity) =>
+      (3.75 * inch * double.parse(velocity)).clamp(0 * inch, 5.75 * inch);
+}

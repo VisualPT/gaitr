@@ -11,7 +11,6 @@ class PdfCubit extends Cubit<PdfState> {
   PdfCubit() : super(PdfLoading());
   bool viewCreated = false;
 
-  //TODO display the PDF in an unzoomed state (waiting on package update)
   void initPDFView() async {
     emit(PdfLoading());
     try {
@@ -23,7 +22,6 @@ class PdfCubit extends Cubit<PdfState> {
         PDFView view = PDFView(
             enableSwipe: false,
             pdfData: pdfData,
-            autoSpacing: false,
             pageFling: false,
             onError: (error) => emit(PdfError(exception: error)),
             onPageError: (page, error) => emit(PdfError(exception: error)),
