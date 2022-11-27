@@ -20,7 +20,6 @@ class EditorPage extends StatefulWidget {
 class _EditorPageState extends State<EditorPage> {
   final double height = 60;
   late VideoEditorController _editorController;
-  //late VideoPlayerController _playerController;
 
   @override
   void initState() {
@@ -32,7 +31,6 @@ class _EditorPageState extends State<EditorPage> {
     _editorController = VideoEditorController.file(widget.file,
         maxDuration: const Duration(seconds: 60))
       ..initialize().then((_) => setState(() {}));
-    //_controller.video.setLooping(true);
   }
 
   @override
@@ -42,13 +40,14 @@ class _EditorPageState extends State<EditorPage> {
   }
 
   void logGaitVelocityStats(VideoPlayerController controller) {
-    final double seconds = controller.value.duration.inMilliseconds / 1000;
-    patientData.measurementDuration = seconds;
-    patientData.velocity = (10 / seconds).toStringAsPrecision(2);
+    final double milliseconds =
+        controller.value.duration.inMilliseconds.toDouble();
+    patientData.measurementDuration = milliseconds;
+    patientData.velocity = (10 / (milliseconds / 1000)).toStringAsPrecision(2);
   }
 
   @override
-  //TODO CHECK show the total measurement time at all times
+  //TODO make TrimSlider change with button presses
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
@@ -57,7 +56,8 @@ class _EditorPageState extends State<EditorPage> {
         middle: AnimatedBuilder(
           animation: _editorController.video,
           builder: (_, __) {
-            final duration = _editorController.video.value.duration.inSeconds;
+            final duration =
+                _editorController.video.value.duration.inMilliseconds;
             // final pos = _editorController.trimPosition * duration;
             final start = _editorController.minTrim * duration;
             final end = _editorController.maxTrim * duration;
@@ -65,11 +65,11 @@ class _EditorPageState extends State<EditorPage> {
             return Padding(
                 padding: EdgeInsets.symmetric(horizontal: height / 4),
                 child: OpacityTransition(
-                  visible: _editorController.isTrimming,
+                  visible: true,
                   child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    Text(formatter(Duration(seconds: start.toInt()))),
+                    Text(formatter(Duration(milliseconds: start.toInt()))),
                     const SizedBox(width: 10),
-                    Text(formatter(Duration(seconds: end.toInt()))),
+                    Text(formatter(Duration(milliseconds: end.toInt()))),
                   ]),
                 ));
           },
@@ -99,17 +99,61 @@ class _EditorPageState extends State<EditorPage> {
                       bottom: 20,
                       child: Row(
                         children: [
+                          const SizedBox(width: 20),
+                          CupertinoButton(
+                              padding: const EdgeInsets.only(
+                                  top: 1, bottom: 1, right: 10, left: 10),
+                              child: const Icon(CupertinoIcons.left_chevron),
+                              color: const Color(0xFFEC7723),
+                              onPressed: () {
+                                _editorController.updateTrim(
+                                    _editorController.minTrim - 0.1,
+                                    _editorController.maxTrim);
+                                setState(() {});
+                              }),
+                          const SizedBox(width: 10),
+                          CupertinoButton(
+                            padding: const EdgeInsets.only(
+                                top: 1, bottom: 1, right: 10, left: 10),
+                            child: const Icon(CupertinoIcons.right_chevron),
+                            color: const Color(0xFFEC7723),
+                            onPressed: () {
+                              print(_editorController.minTrim);
+                              setState(() {
+                                _editorController.updateTrim(
+                                    _editorController.minTrim + 0.1,
+                                    _editorController.maxTrim);
+                              });
+                            },
+                          ),
+                          const SizedBox(width: 20),
                           SizedBox(
                             height: height,
-                            width: MediaQuery.of(context).size.width / 1.4,
+                            width: MediaQuery.of(context).size.width / 3,
                             child: TrimSlider(
-                              // height: ,
                               controller: _editorController,
                             ),
                           ),
-                          const SizedBox(
-                            width: 20,
+                          const SizedBox(width: 20),
+                          CupertinoButton(
+                              padding: const EdgeInsets.only(
+                                  top: 1, bottom: 1, right: 10, left: 10),
+                              child: const Icon(CupertinoIcons.left_chevron),
+                              color: const Color(0xFFEC7723),
+                              onPressed: () => _editorController.updateTrim(
+                                  _editorController.minTrim,
+                                  _editorController.maxTrim - 0.1)),
+                          const SizedBox(width: 10),
+                          CupertinoButton(
+                            padding: const EdgeInsets.only(
+                                top: 1, bottom: 1, right: 10, left: 10),
+                            child: const Icon(CupertinoIcons.right_chevron),
+                            color: const Color(0xFFEC7723),
+                            onPressed: () => _editorController.updateTrim(
+                                _editorController.minTrim,
+                                _editorController.maxTrim + 0.1),
                           ),
+                          const SizedBox(width: 20),
                           CupertinoButton(
                               padding: const EdgeInsets.only(
                                   top: 1, bottom: 1, right: 20, left: 20),
@@ -124,6 +168,8 @@ class _EditorPageState extends State<EditorPage> {
                                     ),
                                   )),
                               onPressed: () {
+                                _editorController.endTrim -
+                                    _editorController.startTrim;
                                 _editorController.video.pause().then((_) {
                                   logGaitVelocityStats(_editorController.video);
                                   consentDialog(
@@ -145,7 +191,7 @@ class _EditorPageState extends State<EditorPage> {
                 AnimatedBuilder(
                   animation: _editorController.video,
                   builder: (_, __) => OpacityTransition(
-                    visible: true,
+                    visible: !_editorController.isPlaying,
                     child: GestureDetector(
                       onTap: _editorController.video.play,
                       child: Container(

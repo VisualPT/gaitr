@@ -68,6 +68,7 @@ class _VideoPageState extends State<VideoPage> {
             }()),
             style: GoogleFonts.robotoMono(
               fontWeight: FontWeight.bold,
+              fontSize: 30,
               color: CupertinoColors.white.withOpacity(0.8),
             ),
           ),
