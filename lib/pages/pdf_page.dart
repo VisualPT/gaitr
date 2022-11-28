@@ -30,6 +30,7 @@ class _PdfPageState extends State<PdfPage> {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
     return CupertinoPageScaffold(
       child: Stack(
         alignment: Alignment.topCenter,
@@ -56,13 +57,12 @@ class _PdfPageState extends State<PdfPage> {
                             child: state.pdfView,
                           ),
                         ),
-                        const Text(
-                            "Pinch the PDF to preview the full document"),
                         const Spacer(),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Row(children: [
                             CupertinoButton(
+                              padding: const EdgeInsets.all(13.0),
                               color: CupertinoColors.link,
                               onPressed: () {
                                 consentDialog(
@@ -78,11 +78,16 @@ class _PdfPageState extends State<PdfPage> {
                                         ModalRoute.withName('/'),
                                         arguments: patientData.isVideo));
                               },
-                              child: const Text("Redo"),
+                              child: const Icon(CupertinoIcons.restart),
                             ),
                             const Spacer(),
                             CupertinoButton(
-                              color: CupertinoColors.link,
+                              padding: EdgeInsets.only(
+                                  left: screenSize.width / 4,
+                                  right: screenSize.width / 4,
+                                  top: 14,
+                                  bottom: 14),
+                              color: const Color(0xFFEC7723),
                               onPressed: () {
                                 consentDialog(
                                     context,
@@ -98,7 +103,9 @@ class _PdfPageState extends State<PdfPage> {
                                   }
                                 });
                               },
-                              child: const Text("Save"),
+                              child: const Text("Save to email",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
                             )
                           ]),
                         )
