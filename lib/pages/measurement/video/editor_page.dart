@@ -19,7 +19,8 @@ class EditorPage extends StatefulWidget {
 
 class _EditorPageState extends State<EditorPage> {
   final double height = 60;
-  late VideoEditorController _editorController;
+  late VideoEditorController _c;
+  late Key trimmerKey = const Key("0");
 
   @override
   void initState() {
@@ -28,39 +29,36 @@ class _EditorPageState extends State<EditorPage> {
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
-    _editorController = VideoEditorController.file(widget.file,
+    _c = VideoEditorController.file(widget.file,
         maxDuration: const Duration(seconds: 60))
       ..initialize().then((_) => setState(() {}));
   }
 
   @override
   void dispose() {
-    _editorController.dispose();
+    _c.dispose();
     super.dispose();
   }
 
-  void logGaitVelocityStats(VideoPlayerController controller) {
-    final double milliseconds =
-        controller.value.duration.inMilliseconds.toDouble();
+  void logGaitVelocityStats(Duration duration) {
+    final double milliseconds = duration.inMilliseconds.toDouble();
     patientData.measurementDuration = milliseconds;
     patientData.velocity = (10 / (milliseconds / 1000)).toStringAsPrecision(2);
   }
 
   @override
-  //TODO make TrimSlider change with button presses
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         backgroundColor: const Color(0x00000000),
         border: Border.all(color: const Color(0x00000000)),
         middle: AnimatedBuilder(
-          animation: _editorController.video,
+          animation: _c.video,
           builder: (_, __) {
-            final duration =
-                _editorController.video.value.duration.inMilliseconds;
+            final duration = _c.video.value.duration.inMilliseconds;
             // final pos = _editorController.trimPosition * duration;
-            final start = _editorController.minTrim * duration;
-            final end = _editorController.maxTrim * duration;
+            final start = _c.minTrim * duration;
+            final end = _c.maxTrim * duration;
 
             return Padding(
                 padding: EdgeInsets.symmetric(horizontal: height / 4),
@@ -69,13 +67,15 @@ class _EditorPageState extends State<EditorPage> {
                   child: Row(mainAxisSize: MainAxisSize.min, children: [
                     Text(formatter(Duration(milliseconds: start.toInt()))),
                     const SizedBox(width: 10),
+                    const Text("-"),
+                    const SizedBox(width: 10),
                     Text(formatter(Duration(milliseconds: end.toInt()))),
                   ]),
                 ));
           },
         ),
       ),
-      child: _editorController.initialized
+      child: _c.initialized
           ? Stack(
               alignment: Alignment.center,
               children: [
@@ -86,13 +86,13 @@ class _EditorPageState extends State<EditorPage> {
                       widthFactor: 1,
                       child: GestureDetector(
                         onTap: () {
-                          if (_editorController.isPlaying) {
-                            _editorController.video.pause();
+                          if (_c.isPlaying) {
+                            _c.video.pause();
                           } else {
-                            _editorController.video.play();
+                            _c.video.play();
                           }
                         },
-                        child: VideoPlayer(_editorController.video),
+                        child: VideoPlayer(_c.video),
                       ),
                     ),
                     Positioned(
@@ -100,59 +100,22 @@ class _EditorPageState extends State<EditorPage> {
                       child: Row(
                         children: [
                           const SizedBox(width: 20),
-                          CupertinoButton(
-                              padding: const EdgeInsets.only(
-                                  top: 1, bottom: 1, right: 10, left: 10),
-                              child: const Icon(CupertinoIcons.left_chevron),
-                              color: const Color(0xFFEC7723),
-                              onPressed: () {
-                                _editorController.updateTrim(
-                                    _editorController.minTrim - 0.1,
-                                    _editorController.maxTrim);
-                                setState(() {});
-                              }),
+                          trimIndexButton(false, false),
                           const SizedBox(width: 10),
-                          CupertinoButton(
-                            padding: const EdgeInsets.only(
-                                top: 1, bottom: 1, right: 10, left: 10),
-                            child: const Icon(CupertinoIcons.right_chevron),
-                            color: const Color(0xFFEC7723),
-                            onPressed: () {
-                              print(_editorController.minTrim);
-                              setState(() {
-                                _editorController.updateTrim(
-                                    _editorController.minTrim + 0.1,
-                                    _editorController.maxTrim);
-                              });
-                            },
-                          ),
+                          trimIndexButton(true, false),
                           const SizedBox(width: 20),
                           SizedBox(
                             height: height,
                             width: MediaQuery.of(context).size.width / 3,
                             child: TrimSlider(
-                              controller: _editorController,
+                              key: trimmerKey,
+                              controller: _c,
                             ),
                           ),
                           const SizedBox(width: 20),
-                          CupertinoButton(
-                              padding: const EdgeInsets.only(
-                                  top: 1, bottom: 1, right: 10, left: 10),
-                              child: const Icon(CupertinoIcons.left_chevron),
-                              color: const Color(0xFFEC7723),
-                              onPressed: () => _editorController.updateTrim(
-                                  _editorController.minTrim,
-                                  _editorController.maxTrim - 0.1)),
+                          trimIndexButton(false, true),
                           const SizedBox(width: 10),
-                          CupertinoButton(
-                            padding: const EdgeInsets.only(
-                                top: 1, bottom: 1, right: 10, left: 10),
-                            child: const Icon(CupertinoIcons.right_chevron),
-                            color: const Color(0xFFEC7723),
-                            onPressed: () => _editorController.updateTrim(
-                                _editorController.minTrim,
-                                _editorController.maxTrim + 0.1),
-                          ),
+                          trimIndexButton(true, true),
                           const SizedBox(width: 20),
                           CupertinoButton(
                               padding: const EdgeInsets.only(
@@ -168,14 +131,14 @@ class _EditorPageState extends State<EditorPage> {
                                     ),
                                   )),
                               onPressed: () {
-                                _editorController.endTrim -
-                                    _editorController.startTrim;
-                                _editorController.video.pause().then((_) {
-                                  logGaitVelocityStats(_editorController.video);
+                                final _duration = _c.endTrim - _c.startTrim;
+
+                                _c.video.pause().then((_) {
+                                  logGaitVelocityStats(_duration);
                                   consentDialog(
                                       context,
                                       "Save Sample?",
-                                      "Final time was ${formatter(_editorController.videoDuration)} seconds",
+                                      "Final time was ${formatter(_duration)} seconds",
                                       "No",
                                       "Yes",
                                       () => Navigator.pop(context),
@@ -189,11 +152,11 @@ class _EditorPageState extends State<EditorPage> {
                   ],
                 ),
                 AnimatedBuilder(
-                  animation: _editorController.video,
+                  animation: _c.video,
                   builder: (_, __) => OpacityTransition(
-                    visible: !_editorController.isPlaying,
+                    visible: !_c.isPlaying,
                     child: GestureDetector(
-                      onTap: _editorController.video.play,
+                      onTap: _c.video.play,
                       child: Container(
                         alignment: Alignment.center,
                         width: 40,
@@ -211,6 +174,39 @@ class _EditorPageState extends State<EditorPage> {
               ],
             )
           : const Center(child: CupertinoActivityIndicator()),
+    );
+  }
+
+  CupertinoButton trimIndexButton(bool isForward, bool isMax) {
+    final IconData icon =
+        isForward ? CupertinoIcons.right_chevron : CupertinoIcons.left_chevron;
+
+    return CupertinoButton(
+      padding: const EdgeInsets.only(top: 1, bottom: 1, right: 10, left: 10),
+      child: Icon(icon),
+      color: const Color(0xFFEC7723),
+      onPressed: () {
+        _c.video.pause();
+        setState(() {
+          if (isMax && isForward && _c.maxTrim < 0.95) {
+            _c.updateTrim(_c.minTrim, _c.maxTrim + 0.05);
+            _c.video
+                .seekTo(Duration(milliseconds: _c.endTrim.inMilliseconds - 50));
+          } else if (isMax && !isForward && (_c.maxTrim - _c.minTrim > 0.1)) {
+            _c.updateTrim(_c.minTrim, _c.maxTrim - 0.05);
+            _c.video.seekTo(
+                Duration(milliseconds: _c.endTrim.inMilliseconds - 100));
+          } else if (!isMax && isForward && (_c.maxTrim - _c.minTrim > 0.1)) {
+            _c.updateTrim(_c.minTrim + 0.05, _c.maxTrim);
+            _c.video.seekTo(_c.startTrim);
+          } else if (!isMax && !isForward && _c.minTrim > 0.05) {
+            _c.updateTrim(_c.minTrim - 0.05, _c.maxTrim);
+            _c.video.seekTo(_c.startTrim);
+          }
+
+          trimmerKey = Key((_c.maxTrim - _c.minTrim).toString());
+        });
+      },
     );
   }
 

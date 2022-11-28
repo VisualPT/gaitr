@@ -14,7 +14,6 @@ void main() {
 }
 
 //TODO TEST On IPAD
-//TODO indexer on editor page
 //TODO offline case
 //TODO add 10 feet option
 //TODO update email template
