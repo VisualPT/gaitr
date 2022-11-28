@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:gaitr/app_styles.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gaitr/components/consent_dialog.dart';
 
@@ -20,10 +20,8 @@ class StopwatchPage extends StatelessWidget {
             const FancyPlasmaWidget(),
             SafeArea(
               child: Text(
-                "${patientData.firstname} ${patientData.lastname} Gait Eval",
-                style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-              ),
+                  "${patientData.firstname} ${patientData.lastname} Gait Eval",
+                  style: AppStyles.titleTextStyle),
             ),
             BlocBuilder<TimerBloc, TimerState>(builder: (context, state) {
               return Column(
@@ -55,13 +53,8 @@ class TimeBubble extends StatelessWidget {
         fit: BoxFit.fitWidth,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text(
-            formatter(state.duration),
-            style: GoogleFonts.robotoMono(
-              fontWeight: FontWeight.bold,
-              color: CupertinoColors.white.withOpacity(0.8),
-            ),
-          ),
+          child:
+              Text(formatter(state.duration), style: AppStyles.timerTextStyle),
         ),
       ),
     );

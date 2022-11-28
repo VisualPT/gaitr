@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:gaitr/app_styles.dart';
 import 'package:gaitr/components/fancy_plasma.dart';
 import 'package:gaitr/models/patient_data.dart';
 import 'package:gaitr/components/patient_form.dart';
@@ -74,9 +75,7 @@ class _LandingPageState extends State<LandingPage> {
 
   List<Widget> measurementMethodToggle() {
     return [
-      const Text('How will you test today?',
-          style: TextStyle(
-              color: CupertinoColors.label, fontWeight: FontWeight.bold)),
+      const Text('How will you test today?', style: AppStyles.inputPromptStyle),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Row(
@@ -94,11 +93,11 @@ class _LandingPageState extends State<LandingPage> {
   }
 
   Widget measurementMethod(IconData icon) {
-    late Color _color = const Color(0x00000000);
+    late Color _color = AppStyles.transparent;
     if (icon == CupertinoIcons.videocam_circle && patientData.isVideo) {
-      _color = const Color(0xFFEC7723);
+      _color = AppStyles.brandTertiaryOrange;
     } else if (icon == CupertinoIcons.stopwatch && !patientData.isVideo) {
-      _color = const Color(0xFFEC7723);
+      _color = AppStyles.brandTertiaryOrange;
     }
     return AnimatedContainer(
         duration: const Duration(milliseconds: 200),
@@ -106,7 +105,7 @@ class _LandingPageState extends State<LandingPage> {
             shape: BoxShape.circle,
             gradient: RadialGradient(
                 center: const Alignment(0, 0.07),
-                colors: [_color, const Color(0x000091DA)],
+                colors: [_color, AppStyles.transparent],
                 stops: const [0.5, 0.8])),
         child: CupertinoButton(
             child: Icon(icon, size: 72.0, color: CupertinoColors.black),

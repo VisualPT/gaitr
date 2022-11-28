@@ -13,10 +13,10 @@ void main() {
   runApp(const Root());
 }
 
-//TODO TEST On IPAD
 //TODO offline case
+//    https://stackoverflow.com/questions/49648022/check-whether-there-is-an-internet-connection-available-on-flutter-app
 //TODO add 10 feet option
-//TODO update email template
+//TODO sending email screen
 
 class Root extends StatefulWidget {
   const Root({Key? key}) : super(key: key);

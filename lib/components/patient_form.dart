@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/cupertino.dart';
+import 'package:gaitr/app_styles.dart';
 import 'package:gaitr/models/patient_data.dart';
 
 class PatientForm extends StatefulWidget {
@@ -39,13 +40,12 @@ class _PatientFormState extends State<PatientForm> {
         content: Form(
           key: _formKey,
           child: SizedBox(
-            height: MediaQuery.of(context).size.height / 3,
+            height: 255,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
                     "Fill out these fields to personalize the gait report"),
-                const Spacer(),
                 _formInput("First Name"),
                 _formInput("Last Name"),
                 //TODO autofill the slashes for date
@@ -89,29 +89,26 @@ class _PatientFormState extends State<PatientForm> {
         : hintTextExample;
     return Padding(
       padding: const EdgeInsets.only(top: 10.0),
-      child: DecoratedBox(
+      child: Container(
+        height: 63,
         decoration: BoxDecoration(
           color: CupertinoColors.systemBackground,
           border: Border.all(),
           borderRadius: BorderRadius.circular(8.0),
         ),
         child: CupertinoTextFormFieldRow(
-          prefix: Text(field,
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold, color: CupertinoColors.label)),
+          prefix: Text(field, style: AppStyles.inputPromptStyle),
           keyboardType: inputType,
           maxLines: lines,
           textCapitalization: TextCapitalization.words,
           placeholder: hintText,
-          placeholderStyle: const TextStyle(
-              fontWeight: FontWeight.w200, color: CupertinoColors.black),
-          style: const TextStyle(
-              fontWeight: FontWeight.w400, color: CupertinoColors.black),
-          validator: (value) => value == null || value.isEmpty
+          placeholderStyle: AppStyles.inputPlaceholderStyle,
+          style: AppStyles.inputTextStyle,
+          validator: (value) => value == null ||
+                  value.isEmpty ||
+                  !value.contains(RegExp(validationRegex))
               ? 'Please enter a valid response'
-              : value.contains(RegExp(validationRegex))
-                  ? null
-                  : 'Please enter a valid response',
+              : null,
           onSaved: (String? value) {
             storeValue(field, value);
           },

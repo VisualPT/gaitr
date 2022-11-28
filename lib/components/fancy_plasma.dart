@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:gaitr/app_styles.dart';
 import 'package:simple_animations/simple_animations.dart';
 
 class FancyPlasmaWidget extends StatelessWidget {
@@ -13,8 +14,8 @@ class FancyPlasmaWidget extends StatelessWidget {
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            Color(0xFF0091DA),
-            Color(0xFF1B365D),
+            AppStyles.brandPrimary,
+            AppStyles.brandSecondaryDark,
           ],
           stops: [
             0,

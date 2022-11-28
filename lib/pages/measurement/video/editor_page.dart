@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:gaitr/app_styles.dart';
 import 'package:gaitr/components/consent_dialog.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_editor/video_editor.dart';
@@ -50,8 +51,8 @@ class _EditorPageState extends State<EditorPage> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        backgroundColor: const Color(0x00000000),
-        border: Border.all(color: const Color(0x00000000)),
+        backgroundColor: AppStyles.transparent,
+        border: Border.all(color: AppStyles.transparent),
         middle: AnimatedBuilder(
           animation: _c.video,
           builder: (_, __) {
@@ -127,7 +128,7 @@ class _EditorPageState extends State<EditorPage> {
                                   child: const Center(
                                     child: Text(
                                       "Analyze",
-                                      style: TextStyle(fontSize: 20),
+                                      style: AppStyles.buttonLabelStyle,
                                     ),
                                   )),
                               onPressed: () {
@@ -184,7 +185,7 @@ class _EditorPageState extends State<EditorPage> {
     return CupertinoButton(
       padding: const EdgeInsets.only(top: 1, bottom: 1, right: 10, left: 10),
       child: Icon(icon),
-      color: const Color(0xFFEC7723),
+      color: AppStyles.brandTertiaryOrange,
       onPressed: () {
         _c.video.pause();
         setState(() {

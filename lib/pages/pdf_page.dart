@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gaitr/app_styles.dart';
 import 'package:gaitr/components/consent_dialog.dart';
 import 'package:gaitr/cubit/pdf/pdf_cubit.dart';
 import 'package:gaitr/components/fancy_plasma.dart';
@@ -42,28 +43,24 @@ class _PdfPageState extends State<PdfPage> {
               builder: (context, state) {
                 if (state is PdfLoaded) {
                   return SafeArea(
-                    child: Center(
-                      child: Column(children: [
-                        Text(
-                          "${patientData.firstname} ${patientData.lastname} Gait Report",
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 20),
+                    child: Stack(children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 20,
+                        child: AspectRatio(
+                          aspectRatio: 8.5 / 11,
+                          child: state.pdfView,
                         ),
-                        const Spacer(),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: AspectRatio(
-                            aspectRatio: 8.5 / 11,
-                            child: state.pdfView,
-                          ),
-                        ),
-                        const Spacer(),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
+                      ),
+                      Positioned(
+                        bottom: 8,
+                        left: 8,
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width - 20,
                           child: Row(children: [
                             CupertinoButton(
                               padding: const EdgeInsets.all(13.0),
-                              color: CupertinoColors.link,
+                              color: AppStyles.brandTertiaryOrange
+                                  .withOpacity(0.8),
                               onPressed: () {
                                 consentDialog(
                                     context,
@@ -87,7 +84,7 @@ class _PdfPageState extends State<PdfPage> {
                                   right: screenSize.width / 4,
                                   top: 14,
                                   bottom: 14),
-                              color: const Color(0xFFEC7723),
+                              color: CupertinoColors.link,
                               onPressed: () {
                                 consentDialog(
                                     context,
@@ -104,13 +101,12 @@ class _PdfPageState extends State<PdfPage> {
                                 });
                               },
                               child: const Text("Save to email",
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold)),
+                                  style: AppStyles.inputPromptStyle),
                             )
                           ]),
-                        )
-                      ]),
-                    ),
+                        ),
+                      )
+                    ]),
                   );
                 } else if (state is PdfLoading) {
                   return const Center(
