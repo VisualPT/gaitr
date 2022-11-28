@@ -83,43 +83,34 @@ class _LandingPageState extends State<LandingPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Spacer(),
-            CupertinoButton(
-              child: Icon(
-                CupertinoIcons.videocam_circle,
-                semanticLabel: "Video Camera Icon",
-                size: patientData.isVideo ? 128.0 : 72.0,
-                color: patientData.isVideo
-                    ? CupertinoColors.activeBlue
-                    : CupertinoColors.inactiveGray,
-                shadows: const [
-                  Shadow(blurRadius: 50.0),
-                  Shadow(blurRadius: 10.0, offset: Offset(3, 4))
-                ],
-              ),
-              onPressed: () => setState(() => patientData.isVideo = true),
-            ),
+            measurementMethod(CupertinoIcons.videocam_circle),
             const Spacer(),
-            CupertinoButton(
-              child: Icon(
-                CupertinoIcons.stopwatch,
-                semanticLabel: "Stop Watch Icon",
-                size: patientData.isVideo ? 72.0 : 128.0,
-                color: patientData.isVideo
-                    ? CupertinoColors.inactiveGray
-                    : CupertinoColors.activeBlue,
-                shadows: const [
-                  Shadow(blurRadius: 50.0),
-                  Shadow(blurRadius: 10.0, offset: Offset(3, 4))
-                ],
-              ),
-              onPressed: () => setState(
-                () => patientData.isVideo = false,
-              ),
-            ),
+            measurementMethod(CupertinoIcons.stopwatch),
             const Spacer(),
           ],
         ),
       ),
     ];
+  }
+
+  Widget measurementMethod(IconData icon) {
+    late Color _color = const Color(0x00000000);
+    if (icon == CupertinoIcons.videocam_circle && patientData.isVideo) {
+      _color = const Color(0xFFEC7723);
+    } else if (icon == CupertinoIcons.stopwatch && !patientData.isVideo) {
+      _color = const Color(0xFFEC7723);
+    }
+    return AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: RadialGradient(
+                center: const Alignment(0, 0.07),
+                colors: [_color, const Color(0x000091DA)],
+                stops: const [0.5, 0.8])),
+        child: CupertinoButton(
+            child: Icon(icon, size: 72.0, color: CupertinoColors.black),
+            onPressed: () => setState(() => patientData.isVideo =
+                icon == CupertinoIcons.videocam_circle ? true : false)));
   }
 }
