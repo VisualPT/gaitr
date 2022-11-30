@@ -11,9 +11,8 @@ class PatientForm extends StatefulWidget {
 }
 
 class _PatientFormState extends State<PatientForm> {
-  // Create a global key that uniquely identifies the Form widget
-  // and allows validation of the form.
   final _formKey = GlobalKey<FormState>();
+  DateTime date = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -35,58 +34,95 @@ class _PatientFormState extends State<PatientForm> {
     return showCupertinoModalPopup(
       useRootNavigator: false,
       context: context,
-      builder: (BuildContext context) => CupertinoAlertDialog(
-        title: const Text('Patient Information'),
-        content: Form(
-          key: _formKey,
-          child: SizedBox(
-            height: 255,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                    "Fill out these fields to personalize the gait report"),
-                _formInput("First Name"),
-                _formInput("Last Name"),
-                //TODO autofill the slashes for date
-                //https://stackoverflow.com/questions/62467842/flutter-textfield-input-validation-for-a-date
-                _formInput("Birth Date",
-                    validationRegex:
-                        r'^(0[1-9]|1[0-2])\/(0[1-9]|1\d|2\d|3[01])\/(19|20)\d{2}$',
-                    hintTextExample: "MM/DD/YYYY"),
-              ],
+      builder: (BuildContext context) =>
+          StatefulBuilder(builder: (context, setState) {
+        return CupertinoAlertDialog(
+          title: const Text('Patient Information'),
+          content: Form(
+            key: _formKey,
+            child: SizedBox(
+              height: 255,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                      "Fill out these fields to personalize the gait report"),
+                  _formInput("First Name"),
+                  _formInput("Last Name"),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10.0),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      decoration: BoxDecoration(
+                        color: CupertinoColors.systemBackground,
+                        border: Border.all(),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text("Birth Date",
+                              style: AppStyles.inputPromptStyle),
+                          CupertinoButton(
+                            onPressed: () => showCupertinoModalPopup<void>(
+                                context: context,
+                                builder: (BuildContext context) => Container(
+                                      height: 216,
+                                      padding: const EdgeInsets.only(top: 6.0),
+                                      margin: EdgeInsets.only(
+                                        bottom: MediaQuery.of(context)
+                                            .viewInsets
+                                            .bottom,
+                                      ),
+                                      color: CupertinoColors.systemBackground
+                                          .resolveFrom(context),
+                                      child: SafeArea(
+                                        top: false,
+                                        child: CupertinoDatePicker(
+                                          initialDateTime: date,
+                                          mode: CupertinoDatePickerMode.date,
+                                          onDateTimeChanged:
+                                              (DateTime newDate) {
+                                            setState(() => date = newDate);
+                                          },
+                                        ),
+                                      ),
+                                    )),
+                            child:
+                                Text('${date.month}/${date.day}/${date.year}'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: CupertinoButton(
-              color: CupertinoColors.link,
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  _formKey.currentState!.save();
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, "/measurement",
-                      arguments: patientData.isVideo);
-                }
-              },
-              child: const Text("Begin Evaluation"),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CupertinoButton(
+                color: CupertinoColors.link,
+                onPressed: () {
+                  storeDateTimeData(date);
+                  if (_formKey.currentState!.validate()) {
+                    _formKey.currentState!.save();
+                    Navigator.pop(context);
+                    Navigator.pushNamed(context, "/measurement",
+                        arguments: patientData.isVideo);
+                  }
+                },
+                child: const Text("Begin Evaluation"),
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        );
+      }),
     );
   }
 
-  Widget _formInput(String field,
-      {int lines = 1,
-      TextInputType inputType = TextInputType.text,
-      String validationRegex = r'[A-Z]',
-      String hintTextExample = " "}) {
-    String hintText = hintTextExample.contains(" ")
-        ? 'Enter a ${field.split(' ')[1].toLowerCase()}'
-        : hintTextExample;
+  Widget _formInput(String field) {
     return Padding(
       padding: const EdgeInsets.only(top: 10.0),
       child: Container(
@@ -98,15 +134,11 @@ class _PatientFormState extends State<PatientForm> {
         ),
         child: CupertinoTextFormFieldRow(
           prefix: Text(field, style: AppStyles.inputPromptStyle),
-          keyboardType: inputType,
-          maxLines: lines,
           textCapitalization: TextCapitalization.words,
-          placeholder: hintText,
+          placeholder: 'Enter a ${field.split(' ')[1].toLowerCase()}',
           placeholderStyle: AppStyles.inputPlaceholderStyle,
           style: AppStyles.inputTextStyle,
-          validator: (value) => value == null ||
-                  value.isEmpty ||
-                  !value.contains(RegExp(validationRegex))
+          validator: (value) => value == null || value.isEmpty
               ? 'Please enter a valid response'
               : null,
           onSaved: (String? value) {
@@ -127,20 +159,6 @@ void storeValue(String field, String? value) {
       case "Last Name":
         patientData.lastname = value!;
         break;
-      case "Birth Date":
-        final DateTime birthdate = stringToDateTime(value!);
-        patientData.bday = birthdate.toString().split(" ")[0];
-        final now = DateTime.now();
-        final String age =
-            (now.difference(birthdate).inDays / 365).floor().toString();
-        patientData.age = age;
-        final nowString = now.toString();
-        final String nowDate = nowString.split(" ")[0];
-        final String nowTime = nowString.split(" ")[1].split(".")[0].substring(
-            0, nowString.split(" ")[1].split(".")[0].lastIndexOf(':'));
-        patientData.date = nowDate;
-        patientData.time = nowTime;
-        break;
       default:
         throw Exception("Invalid field or value used");
     }
@@ -149,16 +167,17 @@ void storeValue(String field, String? value) {
   }
 }
 
-///Input string is in format MM/DD/YYYY , returns a DateTime instance
-stringToDateTime(String birthdate) {
-  try {
-    final int year = int.parse(
-        birthdate.substring(birthdate.lastIndexOf('/') + 1, birthdate.length));
-    final int month = int.parse(birthdate.substring(
-        birthdate.indexOf('/') + 1, birthdate.lastIndexOf('/')));
-    final int day = int.parse(birthdate.substring(0, birthdate.indexOf('/')));
-    return DateTime(year, month, day);
-  } catch (e) {
-    log(e.toString());
-  }
+void storeDateTimeData(DateTime date) {
+  patientData.bday = date.toString().split(" ")[0];
+  final now = DateTime.now();
+  final String age = (now.difference(date).inDays / 365).floor().toString();
+  patientData.age = age;
+  final nowString = now.toString();
+  final String nowDate = nowString.split(" ")[0];
+  final String nowTime = nowString
+      .split(" ")[1]
+      .split(".")[0]
+      .substring(0, nowString.split(" ")[1].split(".")[0].lastIndexOf(':'));
+  patientData.date = nowDate;
+  patientData.time = nowTime;
 }
