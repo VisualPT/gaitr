@@ -9,6 +9,7 @@ import 'package:gaitr/components/consent_dialog.dart';
 import 'package:gaitr/cubit/pdf/pdf_cubit.dart';
 import 'package:gaitr/components/fancy_plasma.dart';
 import 'package:gaitr/models/patient_data.dart';
+import 'package:gaitr/pages/pages.dart';
 import 'package:http/http.dart' as http;
 
 class PdfPage extends StatefulWidget {
@@ -43,19 +44,26 @@ class _PdfPageState extends State<PdfPage> {
               builder: (context, state) {
                 if (state is PdfLoaded) {
                   return SafeArea(
-                    child: Stack(children: [
+                    child: Stack(alignment: Alignment.center, children: [
                       SizedBox(
-                        width: MediaQuery.of(context).size.width - 20,
+                          height: screenSize.height - 30,
+                          width: screenSize.width - 20),
+                      const Positioned(
+                          top: 20,
+                          child: Text("Generated PDF Report",
+                              style: AppStyles.titleTextStyle)),
+                      SizedBox(
+                        width: screenSize.width - 20,
                         child: AspectRatio(
                           aspectRatio: 8.5 / 11,
                           child: state.pdfView,
                         ),
                       ),
                       Positioned(
-                        bottom: 8,
-                        left: 8,
+                        bottom: 0,
+                        left: 0,
                         child: SizedBox(
-                          width: MediaQuery.of(context).size.width - 20,
+                          width: screenSize.width - 20,
                           child: Row(children: [
                             CupertinoButton(
                               padding: const EdgeInsets.all(13.0),
@@ -75,33 +83,41 @@ class _PdfPageState extends State<PdfPage> {
                                         ModalRoute.withName('/'),
                                         arguments: patientData.isVideo));
                               },
-                              child: const Icon(CupertinoIcons.restart),
+                              child: Icon(CupertinoIcons.restart,
+                                  size: screenSize.height * 0.05),
                             ),
                             const Spacer(),
-                            CupertinoButton(
-                              padding: EdgeInsets.only(
-                                  left: screenSize.width / 4,
-                                  right: screenSize.width / 4,
-                                  top: 14,
-                                  bottom: 14),
-                              color: CupertinoColors.link,
-                              onPressed: () {
-                                consentDialog(
-                                    context,
-                                    "Save patient gait data",
-                                    "Are you sure you want to proceed",
-                                    "No",
-                                    "Yes",
-                                    () => Navigator.pop(context), () {
-                                  try {
-                                    prepareEmail(context, state);
-                                  } catch (e) {
-                                    log(e.toString());
-                                  }
-                                });
-                              },
-                              child: const Text("Save to email",
-                                  style: AppStyles.inputPromptStyle),
+                            SizedBox(
+                              child: CupertinoButton(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 13,
+                                    horizontal: (screenSize.width / 4) - 40),
+                                color: CupertinoColors.link,
+                                onPressed: () {
+                                  consentDialog(
+                                      context,
+                                      "Save patient gait data",
+                                      "Are you sure you want to proceed",
+                                      "No",
+                                      "Yes",
+                                      () => Navigator.pop(context), () {
+                                    Navigator.of(context).push(
+                                      CupertinoPageRoute<void>(
+                                          builder: (BuildContext context) =>
+                                              const LoadingPage(
+                                                  message: "Sending email",
+                                                  isLoading: true)),
+                                    );
+                                    try {
+                                      prepareEmail(context, state);
+                                    } catch (e) {
+                                      log(e.toString());
+                                    }
+                                  });
+                                },
+                                child: const Text("Save to email",
+                                    style: AppStyles.buttonLabelStyle),
+                              ),
                             )
                           ]),
                         ),

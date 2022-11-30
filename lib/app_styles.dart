@@ -17,14 +17,17 @@ class AppStyles {
   static const TextStyle inputTextStyle =
       TextStyle(fontWeight: FontWeight.w400, color: black);
 
-  static const TextStyle inputPromptStyle =
-      TextStyle(fontWeight: FontWeight.bold, color: CupertinoColors.label);
+  static const TextStyle inputPromptStyle = TextStyle(
+      fontWeight: FontWeight.bold,
+      color: CupertinoColors.label,
+      fontSize: 15.0);
 
-  static const TextStyle buttonLabelStyle = TextStyle(fontSize: 20);
+  static const TextStyle buttonLabelStyle = TextStyle(fontSize: 30);
 
   static const TextStyle titleTextStyle =
       TextStyle(fontWeight: FontWeight.bold, fontSize: 20);
 
   static TextStyle timerTextStyle = GoogleFonts.robotoMono(
-      fontWeight: FontWeight.bold, fontSize: 30, color: white.withOpacity(0.8));
+      fontWeight: FontWeight.bold, fontSize: 20, color: white.withOpacity(0.8));
+
 }

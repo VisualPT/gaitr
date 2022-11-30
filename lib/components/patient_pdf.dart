@@ -51,7 +51,7 @@ class PatientPdf {
 
   Future<Uint8List> generatePdf(PatientData patentData) async {
     await configPdfStyles();
-    final fyzLogo = await rootBundle.loadString('assets/fyzical-logo.svg');
+    //final fyzLogo = await rootBundle.loadString('assets/fyzical-logo.svg');
     final gaitrLogo = await rootBundle.loadString('assets/gaitr-logo.svg');
 
     final pdf = Document(
@@ -74,11 +74,10 @@ class PatientPdf {
                 child: Column(children: [
               SizedBox(
                 height: inch,
-                child: Row(children: [
-                  SvgImage(svg: gaitrLogo, fit: BoxFit.fitHeight),
-                  Spacer(),
-                  SvgImage(svg: fyzLogo, fit: BoxFit.fitHeight),
-                ]),
+                width: 8.5 * inch,
+                child: Center(
+                  child: SvgImage(svg: gaitrLogo, fit: BoxFit.fitHeight),
+                ),
               ),
               RichText(
                   text: TextSpan(
@@ -94,6 +93,14 @@ class PatientPdf {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                          style: disclaimer,
+                          text:
+                              "A distance of 10 meters is measured over a level surface with 2 meters for acceleration and 2 meters for deceleration."),
+                    ),
+                    Spacer(flex: 2),
                     RichText(
                         text: TextSpan(children: [
                       TextSpan(text: "Sampled on: ", style: detail),
@@ -213,15 +220,7 @@ class PatientPdf {
                 ],
               ),
             ),
-
             Spacer(),
-            RichText(
-              textAlign: TextAlign.center,
-              text: TextSpan(
-                  style: disclaimer,
-                  text:
-                      "A distance of 10 meters is measured over a level surface with 2 meters for acceleration and 2 meters for deceleration."),
-            ),
             Spacer(flex: 4),
             Footer(
               padding: EdgeInsets.zero,
@@ -230,10 +229,11 @@ class PatientPdf {
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    RichText(text: const TextSpan(text: " ")),
                     RichText(
                         text: TextSpan(
                             style: disclaimer,
-                            text: "© 2022 gaitr Measurement Softwares")),
+                            text: "© 2022 Gaitr Measurement Softwares")),
                     RichText(
                         text: TextSpan(
                             style: disclaimer,

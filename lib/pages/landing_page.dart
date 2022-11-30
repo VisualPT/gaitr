@@ -38,10 +38,10 @@ class _LandingPageState extends State<LandingPage> {
             alignment: Alignment.topCenter,
             decoration: const BoxDecoration(
               image: DecorationImage(
-                image: AssetImage(
-                  "gaitr-logo.png",
-                ),
-              ),
+                  image: AssetImage(
+                    "gaitr-logo.png",
+                  ),
+                  fit: BoxFit.scaleDown),
             ),
             child: Padding(
               padding: const EdgeInsets.all(15.0),
@@ -108,7 +108,9 @@ class _LandingPageState extends State<LandingPage> {
                 colors: [_color, AppStyles.transparent],
                 stops: const [0.5, 0.8])),
         child: CupertinoButton(
-            child: Icon(icon, size: 72.0, color: CupertinoColors.black),
+            child: Icon(icon,
+                size: MediaQuery.of(context).size.height * 0.10,
+                color: CupertinoColors.black),
             onPressed: () => setState(() => patientData.isVideo =
                 icon == CupertinoIcons.videocam_circle ? true : false)));
   }
