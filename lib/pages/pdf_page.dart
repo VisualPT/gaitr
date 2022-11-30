@@ -48,10 +48,18 @@ class _PdfPageState extends State<PdfPage> {
                       SizedBox(
                           height: screenSize.height - 30,
                           width: screenSize.width - 20),
-                      const Positioned(
-                          top: 20,
-                          child: Text("Generated PDF Report",
-                              style: AppStyles.titleTextStyle)),
+                      Positioned(
+                        top: 20,
+                        child: Container(
+                            padding: const EdgeInsets.all(10.0),
+                            decoration: BoxDecoration(
+                              color: CupertinoColors.systemBackground,
+                              border: Border.all(),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: const Text("Generated PDF",
+                                style: AppStyles.titleTextStyle)),
+                      ),
                       SizedBox(
                         width: screenSize.width - 20,
                         child: AspectRatio(
@@ -72,8 +80,8 @@ class _PdfPageState extends State<PdfPage> {
                               onPressed: () {
                                 consentDialog(
                                     context,
-                                    "Clear patient gait data",
-                                    "Are you sure you want to redo the gait analysis",
+                                    "Clear patient data",
+                                    "Do you want to repeat the analysis?",
                                     "No",
                                     "Yes",
                                     () => Navigator.pop(context),
@@ -83,21 +91,21 @@ class _PdfPageState extends State<PdfPage> {
                                         ModalRoute.withName('/'),
                                         arguments: patientData.isVideo));
                               },
-                              child: Icon(CupertinoIcons.restart,
-                                  size: screenSize.height * 0.05),
+                              child:
+                                  const Icon(CupertinoIcons.restart, size: 35),
                             ),
                             const Spacer(),
                             SizedBox(
                               child: CupertinoButton(
                                 padding: EdgeInsets.symmetric(
                                     vertical: 13,
-                                    horizontal: (screenSize.width / 4) - 40),
+                                    horizontal: (screenSize.width / 4) - 50),
                                 color: CupertinoColors.link,
                                 onPressed: () {
                                   consentDialog(
                                       context,
                                       "Save patient gait data",
-                                      "Are you sure you want to proceed",
+                                      "Email will be sent to: ${patientData.managingtherapistEmail}",
                                       "No",
                                       "Yes",
                                       () => Navigator.pop(context), () {

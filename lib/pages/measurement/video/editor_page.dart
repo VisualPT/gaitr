@@ -43,7 +43,8 @@ class _EditorPageState extends State<EditorPage> {
 
   void logGaitVelocityStats(Duration duration) {
     final double milliseconds = duration.inMilliseconds.toDouble();
-    patientData.measurementDuration = milliseconds;
+    patientData.measurementDuration =
+        double.parse((milliseconds / 1000).toStringAsPrecision(3));
     patientData.velocity = (10 / (milliseconds / 1000)).toStringAsPrecision(2);
   }
 
@@ -124,7 +125,6 @@ class _EditorPageState extends State<EditorPage> {
                               color: CupertinoColors.link,
                               child: SizedBox(
                                   height: height,
-                                  width: MediaQuery.of(context).size.width / 10,
                                   child: const Center(
                                     child: Text(
                                       "Analyze",

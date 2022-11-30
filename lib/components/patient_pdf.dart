@@ -140,20 +140,20 @@ class PatientPdf {
                     Spacer(),
                     RichText(
                       text: TextSpan(children: [
-                        TextSpan(
-                            text: "Measurement Duration (ss.ms): ",
-                            style: detail),
+                        TextSpan(text: "Measurement Duration: ", style: detail),
                         TextSpan(
                             text: patientData.measurementDuration
                                 .toStringAsPrecision(3),
                             style: detailBold),
+                        TextSpan(text: " seconds", style: detail),
                       ]),
                     ),
                     Spacer(),
                     RichText(
                         text: TextSpan(children: [
-                      TextSpan(text: "Gait Velocity (m/s): ", style: detail),
+                      TextSpan(text: "Gait Velocity: ", style: detail),
                       TextSpan(text: patientData.velocity, style: detailBold),
+                      TextSpan(text: " meters/second", style: detail),
                     ])),
                   ]),
             ),

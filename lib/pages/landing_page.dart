@@ -104,9 +104,9 @@ class _LandingPageState extends State<LandingPage> {
         decoration: BoxDecoration(
             shape: BoxShape.circle,
             gradient: RadialGradient(
-                center: const Alignment(0, 0.07),
+                center: const Alignment(0, 0.04),
                 colors: [_color, AppStyles.transparent],
-                stops: const [0.5, 0.8])),
+                stops: const [0.5, 0.7])),
         child: CupertinoButton(
             child: Icon(icon,
                 size: MediaQuery.of(context).size.height * 0.10,
