@@ -4,10 +4,12 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gaitr/app_styles.dart';
 import 'package:gaitr/components/consent_dialog.dart';
 import 'package:gaitr/cubit/pdf/pdf_cubit.dart';
 import 'package:gaitr/components/fancy_plasma.dart';
 import 'package:gaitr/models/patient_data.dart';
+import 'package:gaitr/pages/pages.dart';
 import 'package:http/http.dart' as http;
 
 class PdfPage extends StatefulWidget {
@@ -30,6 +32,7 @@ class _PdfPageState extends State<PdfPage> {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
     return CupertinoPageScaffold(
       child: Stack(
         alignment: Alignment.topCenter,
@@ -41,29 +44,31 @@ class _PdfPageState extends State<PdfPage> {
               builder: (context, state) {
                 if (state is PdfLoaded) {
                   return SafeArea(
-                    child: Center(
-                      child: Column(children: [
-                        Text(
-                          "${patientData.firstname} ${patientData.lastname} Gait Report",
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 20),
+                    child: Stack(alignment: Alignment.center, children: [
+                      SizedBox(
+                          height: screenSize.height - 30,
+                          width: screenSize.width - 20),
+                      const Positioned(
+                          top: 20,
+                          child: Text("Generated PDF Report",
+                              style: AppStyles.titleTextStyle)),
+                      SizedBox(
+                        width: screenSize.width - 20,
+                        child: AspectRatio(
+                          aspectRatio: 8.5 / 11,
+                          child: state.pdfView,
                         ),
-                        const Spacer(),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: AspectRatio(
-                            aspectRatio: 8.5 / 11,
-                            child: state.pdfView,
-                          ),
-                        ),
-                        const Text(
-                            "Pinch the PDF to preview the full document"),
-                        const Spacer(),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        child: SizedBox(
+                          width: screenSize.width - 20,
                           child: Row(children: [
                             CupertinoButton(
-                              color: CupertinoColors.link,
+                              padding: const EdgeInsets.all(13.0),
+                              color: AppStyles.brandTertiaryOrange
+                                  .withOpacity(0.8),
                               onPressed: () {
                                 consentDialog(
                                     context,
@@ -78,32 +83,46 @@ class _PdfPageState extends State<PdfPage> {
                                         ModalRoute.withName('/'),
                                         arguments: patientData.isVideo));
                               },
-                              child: const Text("Redo"),
+                              child: Icon(CupertinoIcons.restart,
+                                  size: screenSize.height * 0.05),
                             ),
                             const Spacer(),
-                            CupertinoButton(
-                              color: CupertinoColors.link,
-                              onPressed: () {
-                                consentDialog(
-                                    context,
-                                    "Save patient gait data",
-                                    "Are you sure you want to proceed",
-                                    "No",
-                                    "Yes",
-                                    () => Navigator.pop(context), () {
-                                  try {
-                                    prepareEmail(context, state);
-                                  } catch (e) {
-                                    log(e.toString());
-                                  }
-                                });
-                              },
-                              child: const Text("Save"),
+                            SizedBox(
+                              child: CupertinoButton(
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 13,
+                                    horizontal: (screenSize.width / 4) - 40),
+                                color: CupertinoColors.link,
+                                onPressed: () {
+                                  consentDialog(
+                                      context,
+                                      "Save patient gait data",
+                                      "Are you sure you want to proceed",
+                                      "No",
+                                      "Yes",
+                                      () => Navigator.pop(context), () {
+                                    Navigator.of(context).push(
+                                      CupertinoPageRoute<void>(
+                                          builder: (BuildContext context) =>
+                                              const LoadingPage(
+                                                  message: "Sending email",
+                                                  isLoading: true)),
+                                    );
+                                    try {
+                                      prepareEmail(context, state);
+                                    } catch (e) {
+                                      log(e.toString());
+                                    }
+                                  });
+                                },
+                                child: const Text("Save to email",
+                                    style: AppStyles.buttonLabelStyle),
+                              ),
                             )
                           ]),
-                        )
-                      ]),
-                    ),
+                        ),
+                      )
+                    ]),
                   );
                 } else if (state is PdfLoading) {
                   return const Center(
@@ -145,7 +164,6 @@ class _PdfPageState extends State<PdfPage> {
   }
 }
 
-//TODO check if online before doing this
 Future<http.Response> sendEmail() async {
   const serviceId = "service_1j62fhe";
   const templateId = "template_95smzbm";

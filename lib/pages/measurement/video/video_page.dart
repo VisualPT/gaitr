@@ -2,7 +2,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:gaitr/app_styles.dart';
 
 import '../../../cubit/camera/camera_cubit.dart';
 
@@ -66,10 +66,7 @@ class _VideoPageState extends State<VideoPage> {
                 return formatter(const Duration(seconds: 0));
               }
             }()),
-            style: GoogleFonts.robotoMono(
-              fontWeight: FontWeight.bold,
-              color: CupertinoColors.white.withOpacity(0.8),
-            ),
+            style: AppStyles.timerTextStyle,
           ),
         ),
       ),

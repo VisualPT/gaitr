@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:gaitr/app_styles.dart';
 import 'package:gaitr/components/consent_dialog.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_editor/video_editor.dart';
@@ -19,8 +20,8 @@ class EditorPage extends StatefulWidget {
 
 class _EditorPageState extends State<EditorPage> {
   final double height = 60;
-  late VideoEditorController _editorController;
-  //late VideoPlayerController _playerController;
+  late VideoEditorController _c;
+  late Key trimmerKey = const Key("0");
 
   @override
   void initState() {
@@ -29,53 +30,53 @@ class _EditorPageState extends State<EditorPage> {
       DeviceOrientation.landscapeLeft,
       DeviceOrientation.landscapeRight,
     ]);
-    _editorController = VideoEditorController.file(widget.file,
+    _c = VideoEditorController.file(widget.file,
         maxDuration: const Duration(seconds: 60))
       ..initialize().then((_) => setState(() {}));
-    //_controller.video.setLooping(true);
   }
 
   @override
   void dispose() {
-    _editorController.dispose();
+    _c.dispose();
     super.dispose();
   }
 
-  void logGaitVelocityStats(VideoPlayerController controller) {
-    final double seconds = controller.value.duration.inMilliseconds / 1000;
-    patientData.measurementDuration = seconds;
-    patientData.velocity = (10 / seconds).toStringAsPrecision(2);
+  void logGaitVelocityStats(Duration duration) {
+    final double milliseconds = duration.inMilliseconds.toDouble();
+    patientData.measurementDuration = milliseconds;
+    patientData.velocity = (10 / (milliseconds / 1000)).toStringAsPrecision(2);
   }
 
   @override
-  //TODO CHECK show the total measurement time at all times
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
-        backgroundColor: const Color(0x00000000),
-        border: Border.all(color: const Color(0x00000000)),
+        backgroundColor: AppStyles.transparent,
+        border: Border.all(color: AppStyles.transparent),
         middle: AnimatedBuilder(
-          animation: _editorController.video,
+          animation: _c.video,
           builder: (_, __) {
-            final duration = _editorController.video.value.duration.inSeconds;
+            final duration = _c.video.value.duration.inMilliseconds;
             // final pos = _editorController.trimPosition * duration;
-            final start = _editorController.minTrim * duration;
-            final end = _editorController.maxTrim * duration;
+            final start = _c.minTrim * duration;
+            final end = _c.maxTrim * duration;
 
             return Padding(
                 padding: EdgeInsets.symmetric(horizontal: height / 4),
                 child: OpacityTransition(
-                  visible: _editorController.isTrimming,
+                  visible: true,
                   child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    Text(formatter(Duration(seconds: start.toInt()))),
+                    Text(formatter(Duration(milliseconds: start.toInt()))),
                     const SizedBox(width: 10),
-                    Text(formatter(Duration(seconds: end.toInt()))),
+                    const Text("-"),
+                    const SizedBox(width: 10),
+                    Text(formatter(Duration(milliseconds: end.toInt()))),
                   ]),
                 ));
           },
         ),
       ),
-      child: _editorController.initialized
+      child: _c.initialized
           ? Stack(
               alignment: Alignment.center,
               children: [
@@ -86,30 +87,37 @@ class _EditorPageState extends State<EditorPage> {
                       widthFactor: 1,
                       child: GestureDetector(
                         onTap: () {
-                          if (_editorController.isPlaying) {
-                            _editorController.video.pause();
+                          if (_c.isPlaying) {
+                            _c.video.pause();
                           } else {
-                            _editorController.video.play();
+                            _c.video.play();
                           }
                         },
-                        child: VideoPlayer(_editorController.video),
+                        child: VideoPlayer(_c.video),
                       ),
                     ),
                     Positioned(
                       bottom: 20,
                       child: Row(
                         children: [
+                          const SizedBox(width: 20),
+                          trimIndexButton(false, false),
+                          const SizedBox(width: 10),
+                          trimIndexButton(true, false),
+                          const SizedBox(width: 20),
                           SizedBox(
                             height: height,
-                            width: MediaQuery.of(context).size.width / 1.4,
+                            width: MediaQuery.of(context).size.width / 3,
                             child: TrimSlider(
-                              // height: ,
-                              controller: _editorController,
+                              key: trimmerKey,
+                              controller: _c,
                             ),
                           ),
-                          const SizedBox(
-                            width: 20,
-                          ),
+                          const SizedBox(width: 20),
+                          trimIndexButton(false, true),
+                          const SizedBox(width: 10),
+                          trimIndexButton(true, true),
+                          const SizedBox(width: 20),
                           CupertinoButton(
                               padding: const EdgeInsets.only(
                                   top: 1, bottom: 1, right: 20, left: 20),
@@ -120,16 +128,18 @@ class _EditorPageState extends State<EditorPage> {
                                   child: const Center(
                                     child: Text(
                                       "Analyze",
-                                      style: TextStyle(fontSize: 20),
+                                      style: AppStyles.buttonLabelStyle,
                                     ),
                                   )),
                               onPressed: () {
-                                _editorController.video.pause().then((_) {
-                                  logGaitVelocityStats(_editorController.video);
+                                final _duration = _c.endTrim - _c.startTrim;
+
+                                _c.video.pause().then((_) {
+                                  logGaitVelocityStats(_duration);
                                   consentDialog(
                                       context,
                                       "Save Sample?",
-                                      "Final time was ${formatter(_editorController.videoDuration)} seconds",
+                                      "Final time was ${formatter(_duration)} seconds",
                                       "No",
                                       "Yes",
                                       () => Navigator.pop(context),
@@ -143,11 +153,11 @@ class _EditorPageState extends State<EditorPage> {
                   ],
                 ),
                 AnimatedBuilder(
-                  animation: _editorController.video,
+                  animation: _c.video,
                   builder: (_, __) => OpacityTransition(
-                    visible: true,
+                    visible: !_c.isPlaying,
                     child: GestureDetector(
-                      onTap: _editorController.video.play,
+                      onTap: _c.video.play,
                       child: Container(
                         alignment: Alignment.center,
                         width: 40,
@@ -165,6 +175,39 @@ class _EditorPageState extends State<EditorPage> {
               ],
             )
           : const Center(child: CupertinoActivityIndicator()),
+    );
+  }
+
+  CupertinoButton trimIndexButton(bool isForward, bool isMax) {
+    final IconData icon =
+        isForward ? CupertinoIcons.right_chevron : CupertinoIcons.left_chevron;
+
+    return CupertinoButton(
+      padding: const EdgeInsets.only(top: 1, bottom: 1, right: 10, left: 10),
+      child: Icon(icon),
+      color: AppStyles.brandTertiaryOrange,
+      onPressed: () {
+        _c.video.pause();
+        setState(() {
+          if (isMax && isForward && _c.maxTrim < 0.95) {
+            _c.updateTrim(_c.minTrim, _c.maxTrim + 0.05);
+            _c.video
+                .seekTo(Duration(milliseconds: _c.endTrim.inMilliseconds - 50));
+          } else if (isMax && !isForward && (_c.maxTrim - _c.minTrim > 0.1)) {
+            _c.updateTrim(_c.minTrim, _c.maxTrim - 0.05);
+            _c.video.seekTo(
+                Duration(milliseconds: _c.endTrim.inMilliseconds - 100));
+          } else if (!isMax && isForward && (_c.maxTrim - _c.minTrim > 0.1)) {
+            _c.updateTrim(_c.minTrim + 0.05, _c.maxTrim);
+            _c.video.seekTo(_c.startTrim);
+          } else if (!isMax && !isForward && _c.minTrim > 0.05) {
+            _c.updateTrim(_c.minTrim - 0.05, _c.maxTrim);
+            _c.video.seekTo(_c.startTrim);
+          }
+
+          trimmerKey = Key((_c.maxTrim - _c.minTrim).toString());
+        });
+      },
     );
   }
 
