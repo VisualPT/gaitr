@@ -19,7 +19,6 @@ class BackendCubit extends Cubit<BackendState> {
 
   Future<void> init() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
-    print(connectivityResult);
     if (connectivityResult == ConnectivityResult.none) {
       emit(const BackendError("No Network Detected"));
     } else {

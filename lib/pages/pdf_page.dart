@@ -164,7 +164,6 @@ class _PdfPageState extends State<PdfPage> {
   }
 }
 
-//TODO check if online before doing this
 Future<http.Response> sendEmail() async {
   const serviceId = "service_1j62fhe";
   const templateId = "template_95smzbm";

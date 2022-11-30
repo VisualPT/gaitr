@@ -49,6 +49,7 @@ class _RootState extends State<Root> {
                               ? const VideoPage()
                               : const StopwatchPage());
                     }
+                    return null;
                   });
             }));
           } else if (state is BackendError) {
