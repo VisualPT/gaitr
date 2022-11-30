@@ -78,6 +78,9 @@ PODS:
     - AWSCore (= 2.27.15)
   - camera (0.0.1):
     - Flutter
+  - connectivity_plus (0.0.1):
+    - Flutter
+    - ReachabilitySwift
   - ffmpeg-kit-ios-min-gpl (4.5.1)
   - ffmpeg_kit_flutter_min_gpl (4.5.1):
     - ffmpeg_kit_flutter_min_gpl/min-gpl (= 4.5.1)
@@ -102,6 +105,7 @@ PODS:
     - Flutter
   - printing (1.0.0):
     - Flutter
+  - ReachabilitySwift (5.0.0)
   - SQLite.swift (0.13.2):
     - SQLite.swift/standard (= 0.13.2)
   - SQLite.swift/standard (0.13.2)
@@ -124,6 +128,7 @@ DEPENDENCIES:
   - amplify_flutter_ios (from `.symlinks/plugins/amplify_flutter_ios/ios`)
   - amplify_storage_s3_ios (from `.symlinks/plugins/amplify_storage_s3_ios/ios`)
   - camera (from `.symlinks/plugins/camera/ios`)
+  - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - ffmpeg_kit_flutter_min_gpl (from `.symlinks/plugins/ffmpeg_kit_flutter_min_gpl/ios`)
   - Flutter (from `Flutter`)
   - flutter_pdfview (from `.symlinks/plugins/flutter_pdfview/ios`)
@@ -148,6 +153,7 @@ SPEC REPOS:
     - ffmpeg-kit-ios-min-gpl
     - libwebp
     - ObjectMapper
+    - ReachabilitySwift
     - SQLite.swift
     - Starscream
     - SwiftFormat
@@ -168,6 +174,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/amplify_storage_s3_ios/ios"
   camera:
     :path: ".symlinks/plugins/camera/ios"
+  connectivity_plus:
+    :path: ".symlinks/plugins/connectivity_plus/ios"
   ffmpeg_kit_flutter_min_gpl:
     :path: ".symlinks/plugins/ffmpeg_kit_flutter_min_gpl/ios"
   Flutter:
@@ -203,6 +211,7 @@ SPEC CHECKSUMS:
   AWSPluginsCore: 120cfa265293694921b6595fe00d1cb5ab558847
   AWSS3: 09801b290f8818f532694cabd5d503c7474eb3df
   camera: 9993f92f2c793e87b65e35f3a23c70582afb05b1
+  connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
   ffmpeg-kit-ios-min-gpl: da951b00628916702be2a90918181ebdcdd569ff
   ffmpeg_kit_flutter_min_gpl: 3c3266c6284c29340ac8bea41613efcdd7aea3e4
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
@@ -211,6 +220,7 @@ SPEC CHECKSUMS:
   ObjectMapper: 1eb41f610210777375fa806bf161dc39fb832b81
   path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
   printing: eafa00acb682c0ca029d4d98d0798f55a1e27102
+  ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   SQLite.swift: 4fc2be46c36392e3b87afe6fe7f1801c1daa07ef
   Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
   SwiftFormat: 61cda3819dc3a7d69795ce0430e1e1d53c4a4fb2

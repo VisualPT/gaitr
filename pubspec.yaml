@@ -52,6 +52,7 @@ dependencies:
   simple_animations: ^3.0.3
   google_fonts: ^3.0.1
   http: ^0.13.5
+  connectivity_plus: ^3.0.2
 
 dev_dependencies:
   flutter_test:
