@@ -28,7 +28,6 @@ class _LandingPageState extends State<LandingPage> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      //TODO be smarter with this
       onTapDown: ((_) => setPreferences()),
       child: Stack(
         alignment: Alignment.topCenter,

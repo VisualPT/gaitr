@@ -70,7 +70,6 @@ class CameraCubit extends Cubit<CameraState> {
 
   void resetCamera() async {
     emit(CameraLoading());
-    print("retrying");
     initCamera();
   }
 }
