@@ -41,8 +41,9 @@ class CameraCubit extends Cubit<CameraState> {
       await cameraController.prepareForVideoRecording();
 
       emit(CameraStandby(controller: cameraController));
-    } on Exception catch (e) {
-      emit(CameraError(exception: e));
+
+    }catch(e) {
+      emit(CameraError(exception: Exception(e.toString())));
     }
     //TODO Handle exception when no camera available
   }
@@ -65,5 +66,11 @@ class CameraCubit extends Cubit<CameraState> {
       resetTimer();
       emit(CameraError(exception: e));
     }
+  }
+
+  void resetCamera() async {
+    emit(CameraLoading());
+    print("retrying");
+    initCamera();
   }
 }

@@ -33,6 +33,7 @@ class _RootState extends State<Root> {
             return Authenticator(child:
                 BlocBuilder<AuthCubit, AuthState>(builder: (context, state) {
               return CupertinoApp(
+                  debugShowCheckedModeBanner: false,
                   color: CupertinoColors.systemBackground,
                   title: 'gaitr',
                   builder: Authenticator.builder(),

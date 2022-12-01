@@ -34,9 +34,10 @@ class _VideoPageState extends State<VideoPage> {
                               children: [
                                 Text(state.exception.toString()),
                                 CupertinoButton(
-                                    onPressed: () =>
-                                        BlocProvider.of<CameraCubit>(context)
-                                          ..initCamera,
+                                    onPressed: () {
+                                      BlocProvider.of<CameraCubit>(context)
+                                          .resetCamera();
+                                    },
                                     child: const Text("Retry"))
                               ],
                             ),

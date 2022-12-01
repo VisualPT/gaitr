@@ -75,7 +75,8 @@ class _LandingPageState extends State<LandingPage> {
 
   List<Widget> measurementMethodToggle() {
     return [
-      const Text('How will you test today?', style: AppStyles.inputPromptStyle),
+      const Text('Choose preferred measurement method',
+          style: AppStyles.inputPromptStyle),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Row(
