@@ -30,29 +30,31 @@ class _RootState extends State<Root> {
         child:
             BlocBuilder<BackendCubit, BackendState>(builder: (context, state) {
           if (state is BackendConnected) {
-            return Authenticator(child:
-                BlocBuilder<AuthCubit, AuthState>(builder: (context, state) {
-              return CupertinoApp(
-                  debugShowCheckedModeBanner: false,
-                  color: CupertinoColors.systemBackground,
-                  title: 'gaitr',
-                  builder: Authenticator.builder(),
-                  routes: {
-                    "/": (context) => const LandingPage(),
-                    "/pdf": (context) => const PdfPage(),
-                    "/settings": (context) => const SettingsPage(),
-                  },
-                  onGenerateRoute: (settings) {
-                    if (settings.name == "/measurement") {
-                      final useVideo = settings.arguments as bool;
-                      return CupertinoPageRoute(
-                          builder: (_) => useVideo
-                              ? const VideoPage()
-                              : const StopwatchPage());
-                    }
-                    return null;
-                  });
-            }));
+            return Authenticator(
+                child: BlocBuilder<AuthCubit, AuthState>(
+                    bloc: AuthCubit()..authUser(),
+                    builder: (context, state) {
+                      return CupertinoApp(
+                          debugShowCheckedModeBanner: false,
+                          color: CupertinoColors.systemBackground,
+                          title: 'gaitr',
+                          builder: Authenticator.builder(),
+                          routes: {
+                            "/": (context) => const LandingPage(),
+                            "/pdf": (context) => const PdfPage(),
+                            "/settings": (context) => const SettingsPage(),
+                          },
+                          onGenerateRoute: (settings) {
+                            if (settings.name == "/measurement") {
+                              final useVideo = settings.arguments as bool;
+                              return CupertinoPageRoute(
+                                  builder: (_) => useVideo
+                                      ? const VideoPage()
+                                      : const StopwatchPage());
+                            }
+                            return null;
+                          });
+                    }));
           } else if (state is BackendError) {
             return CupertinoApp(
               color: CupertinoColors.systemBackground,
