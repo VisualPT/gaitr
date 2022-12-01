@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gaitr/app_styles.dart';
 import 'package:gaitr/components/consent_dialog.dart';
+import 'package:gaitr/cubit/auth/auth_cubit.dart';
 import 'package:gaitr/cubit/pdf/pdf_cubit.dart';
 import 'package:gaitr/components/fancy_plasma.dart';
 import 'package:gaitr/models/patient_data.dart';
@@ -101,28 +102,27 @@ class _PdfPageState extends State<PdfPage> {
                                     vertical: 13,
                                     horizontal: (screenSize.width / 4) - 50),
                                 color: CupertinoColors.link,
-                                onPressed: () {
-                                  consentDialog(
-                                      context,
-                                      "Save patient gait data",
-                                      "Email will be sent to: ${patientData.managingtherapistEmail}",
-                                      "No",
-                                      "Yes",
-                                      () => Navigator.pop(context), () {
-                                    Navigator.of(context).push(
-                                      CupertinoPageRoute<void>(
-                                          builder: (BuildContext context) =>
-                                              const LoadingPage(
-                                                  message: "Sending email",
-                                                  isLoading: true)),
-                                    );
-                                    try {
-                                      prepareEmail(context, state);
-                                    } catch (e) {
-                                      log(e.toString());
-                                    }
-                                  });
-                                },
+                                onPressed: () => ensureEmail().then((value) =>
+                                    consentDialog(
+                                        context,
+                                        "Save patient gait data",
+                                        "Email will be sent to: ${patientData.managingtherapistEmail}",
+                                        "No",
+                                        "Yes",
+                                        () => Navigator.pop(context), () {
+                                      Navigator.of(context).push(
+                                        CupertinoPageRoute<void>(
+                                            builder: (BuildContext context) =>
+                                                const LoadingPage(
+                                                    message: "Sending email",
+                                                    isLoading: true)),
+                                      );
+                                      try {
+                                        prepareEmail(context, state);
+                                      } catch (e) {
+                                        log(e.toString());
+                                      }
+                                    })),
                                 child: const Text("Save to email",
                                     style: AppStyles.buttonLabelStyle),
                               ),

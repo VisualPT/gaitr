@@ -36,3 +36,13 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 }
+
+Future<void> ensureEmail() async {
+  return await Amplify.Auth.fetchUserAttributes().then((attributes) {
+    for (AuthUserAttribute attr in attributes) {
+      if (attr.userAttributeKey.toString().compareTo("email") == 0) {
+        patientData.managingtherapistEmail = attr.value;
+      }
+    }
+  });
+}
