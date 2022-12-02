@@ -33,6 +33,8 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Camera is used to capture visual data which will be interpreted and calculated to find gait velocity</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Allow Gaitr to capture audio data</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
