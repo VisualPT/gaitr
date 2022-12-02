@@ -39,8 +39,6 @@
 	<string>Camera is used to capture visual data which will be interpreted and calculated to find gait velocity</string>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Allow Flutter tools on computer to debug application.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Not using the mic for anything yet</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>

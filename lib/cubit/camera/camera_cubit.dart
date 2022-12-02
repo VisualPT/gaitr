@@ -30,19 +30,18 @@ class CameraCubit extends Cubit<CameraState> {
     try {
       final cameras = await availableCameras();
       final cameraController = CameraController(
-        cameras.firstWhere(
-            (camera) => camera.lensDirection == CameraLensDirection.back),
-        ResolutionPreset.high,
-        imageFormatGroup: ImageFormatGroup.bgra8888,
-      );
+          cameras.firstWhere(
+              (camera) => camera.lensDirection == CameraLensDirection.back),
+          ResolutionPreset.high,
+          imageFormatGroup: ImageFormatGroup.bgra8888,
+          enableAudio: false);
       await cameraController.initialize();
       await cameraController
           .lockCaptureOrientation(DeviceOrientation.landscapeLeft);
       await cameraController.prepareForVideoRecording();
 
       emit(CameraStandby(controller: cameraController));
-
-    }catch(e) {
+    } catch (e) {
       emit(CameraError(exception: Exception(e.toString())));
     }
     //TODO Handle exception when no camera available
