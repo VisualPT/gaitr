@@ -18,47 +18,49 @@ class BackendCubit extends Cubit<BackendState> {
   BackendCubit() : super(const BackendLoading());
 
   Future<void> init() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.none) {
-      emit(const BackendError("No Network Detected"));
-    } else {
-      try {
-        final AmplifyDataStore _dataStorePlugin =
-            AmplifyDataStore(modelProvider: ModelProvider.instance);
-        final AmplifyAPI _apiPlugin = AmplifyAPI();
-        final AmplifyAuthCognito _authPlugin = AmplifyAuthCognito();
-        final AmplifyStorageS3 _storagePlugin = AmplifyStorageS3();
+    monitorConnectivity();
+    try {
+      final AmplifyDataStore _dataStorePlugin =
+          AmplifyDataStore(modelProvider: ModelProvider.instance);
+      final AmplifyAPI _apiPlugin = AmplifyAPI();
+      final AmplifyAuthCognito _authPlugin = AmplifyAuthCognito();
+      final AmplifyStorageS3 _storagePlugin = AmplifyStorageS3();
 
-        await Amplify.addPlugins(
-            [_dataStorePlugin, _apiPlugin, _authPlugin, _storagePlugin]);
-        await Amplify.configure(amplifyconfig).then((value) {
-          kDebugMode ? _verboseLogging() : null;
-          Amplify.Auth.fetchAuthSession().then(((session) {
-            configProd();
-            emit(const BackendConnected());
-          }));
-        });
-      } on AmplifyAlreadyConfiguredException {
-        emit(const BackendError(
-            'Reset Gaitr to refresh the back end services.'));
-      } on Exception catch (e) {
-        log(e.toString());
-        emit(BackendError(e.toString()));
-      }
-      emit(const BackendConnected());
+      await Amplify.addPlugins(
+          [_dataStorePlugin, _apiPlugin, _authPlugin, _storagePlugin]);
+      await Amplify.configure(amplifyconfig).then((value) {
+        kDebugMode ? _verboseLogging() : null;
+        Amplify.Auth.fetchAuthSession().then(((session) {
+          emit(const BackendConnected());
+        }));
+      });
+    } on AmplifyAlreadyConfiguredException {
+      emit(const BackendError('Reset Gaitr to refresh the back end services.'));
+    } on Exception catch (e) {
+      log(e.toString());
+      emit(BackendError(e.toString()));
     }
+    emit(const BackendConnected());
   }
 
-  Future<void> configProd() async {
-    log("Production (local storage persistant on app restart) or no user signed in",
-        name: "Amplify Config Mode");
+  //Possible future bug when backend is actually used, instead of emitting [BackendConnected] when the device is reconnected to a network, we need to check if the backend is configured and if it isnt, configure it.
+  void monitorConnectivity() {
+    Connectivity().onConnectivityChanged.listen((event) =>
+        event == ConnectivityResult.none
+            ? emit(const BackendError("No Network Detected"))
+            : emit(const BackendConnected()));
   }
 
-  Future<void> configDev() async {
-    log("Development (local storage cleared and resynced upon app restarted)",
-        name: "Amplify Config Mode");
-    await Amplify.DataStore.clear().then((_) => Amplify.DataStore.start());
-  }
+  // Future<void> configProd() async {
+  //   log("Production (local storage persistant on app restart) or no user signed in",
+  //       name: "Amplify Config Mode");
+  // }
+
+  // Future<void> configDev() async {
+  //   log("Development (local storage cleared and resynced upon app restarted)",
+  //       name: "Amplify Config Mode");
+  //   await Amplify.DataStore.clear().then((_) => Amplify.DataStore.start());
+  // }
 
   //Delays queries until DataStore is completely synced
   void syncListener() {
