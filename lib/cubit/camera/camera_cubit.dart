@@ -30,11 +30,12 @@ class CameraCubit extends Cubit<CameraState> {
     try {
       final cameras = await availableCameras();
       final cameraController = CameraController(
-          cameras.firstWhere(
-              (camera) => camera.lensDirection == CameraLensDirection.back),
-          ResolutionPreset.high,
-          imageFormatGroup: ImageFormatGroup.bgra8888,
-          enableAudio: false);
+        cameras.firstWhere(
+            (camera) => camera.lensDirection == CameraLensDirection.back),
+        ResolutionPreset.high,
+        enableAudio: false,
+        imageFormatGroup: ImageFormatGroup.bgra8888,
+      );
       await cameraController.initialize();
       await cameraController
           .lockCaptureOrientation(DeviceOrientation.landscapeLeft);
