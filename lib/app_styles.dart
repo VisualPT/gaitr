@@ -15,7 +15,7 @@ class AppStyles {
       TextStyle(fontWeight: FontWeight.w200, color: black);
 
   static const TextStyle inputTextStyle =
-      TextStyle(fontWeight: FontWeight.w400, color: black);
+      TextStyle(fontWeight: FontWeight.w400, color: black, fontSize: 15);
 
   static const TextStyle inputPromptStyle = TextStyle(
       fontWeight: FontWeight.bold,
@@ -29,5 +29,4 @@ class AppStyles {
 
   static TextStyle timerTextStyle = GoogleFonts.robotoMono(
       fontWeight: FontWeight.bold, fontSize: 20, color: white.withOpacity(0.8));
-
 }

@@ -11,6 +11,8 @@ void main() {
   runApp(const Root());
 }
 //TODO add 10 feet option
+//TODO add age/height norm (PDF)
+//TODO 5-15 videos for each age group
 
 class Root extends StatefulWidget {
   const Root({Key? key}) : super(key: key);

@@ -94,12 +94,11 @@ class PatientPdf {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                          style: disclaimer,
-                          text:
-                              "A distance of 10 meters is measured over a level surface with 2 meters for acceleration and 2 meters for deceleration."),
-                    ),
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                            style: disclaimer,
+                            text:
+                                "A distance of 10 meters is measured over a level surface with 2 meters for acceleration and 2 meters for deceleration.")),
                     Spacer(flex: 2),
                     RichText(
                         text: TextSpan(children: [
@@ -126,6 +125,15 @@ class PatientPdf {
                         TextSpan(text: " (", style: detail),
                         TextSpan(text: patientData.age, style: detailBold),
                         TextSpan(text: " y/o)", style: detail),
+                      ]),
+                    ),
+                    Spacer(),
+                    RichText(
+                      text: TextSpan(children: [
+                        TextSpan(text: "Gender: ", style: detail),
+                        TextSpan(
+                            text: patientData.isMale ? "Male" : "Female",
+                            style: detailBold),
                       ]),
                     ),
                     Spacer(),
@@ -277,5 +285,5 @@ class PatientPdf {
   }
 
   double positioner(String velocity) =>
-      (3.75 * inch * double.parse(velocity)).clamp(0 * inch, 5.75 * inch);
+      (3.43 * inch * double.parse(velocity)).clamp(0 * inch, 5.75 * inch);
 }

@@ -41,7 +41,7 @@ class _PatientFormState extends State<PatientForm> {
           content: Form(
             key: _formKey,
             child: SizedBox(
-              height: 255,
+              height: 310,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -50,7 +50,7 @@ class _PatientFormState extends State<PatientForm> {
                   _formInput("First Name"),
                   _formInput("Last Name"),
                   Padding(
-                    padding: const EdgeInsets.only(top: 10.0),
+                    padding: const EdgeInsets.symmetric(vertical: 5.0),
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10.0),
                       decoration: BoxDecoration(
@@ -95,6 +95,64 @@ class _PatientFormState extends State<PatientForm> {
                       ),
                     ),
                   ),
+                  GestureDetector(
+                    onTap: () => setState(
+                        () => patientData.isMale = !patientData.isMale),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 5.0),
+                      child: Container(
+                        padding: const EdgeInsets.all(10.0),
+                        decoration: BoxDecoration(
+                          color: CupertinoColors.systemBackground,
+                          border: Border.all(),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Spacer(flex: 2),
+                            const Text("Gender",
+                                style: AppStyles.inputPromptStyle),
+                            const Spacer(),
+                            Row(
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(1.0),
+                                      decoration: BoxDecoration(
+                                          border: Border.all(),
+                                          borderRadius:
+                                              BorderRadius.circular(8.0),
+                                          color: patientData.isMale
+                                              ? AppStyles.brandTertiaryOrange
+                                              : AppStyles.transparent),
+                                      child: const Text("Male",
+                                          style: AppStyles.inputTextStyle),
+                                    ),
+                                    const Text("/   "),
+                                    Container(
+                                      padding: const EdgeInsets.all(1.0),
+                                      decoration: BoxDecoration(
+                                          border: Border.all(),
+                                          borderRadius:
+                                              BorderRadius.circular(8.0),
+                                          color: patientData.isMale
+                                              ? AppStyles.transparent
+                                              : AppStyles.brandTertiaryOrange),
+                                      child: const Text("Female",
+                                          style: AppStyles.inputTextStyle),
+                                    )
+                                  ],
+                                ),
+                              ],
+                            ),
+                            const Spacer(),
+                          ],
+                        ),
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),
@@ -124,7 +182,7 @@ class _PatientFormState extends State<PatientForm> {
 
   Widget _formInput(String field) {
     return Padding(
-      padding: const EdgeInsets.only(top: 10.0),
+      padding: const EdgeInsets.symmetric(vertical: 5.0),
       child: Container(
         height: 63,
         decoration: BoxDecoration(
