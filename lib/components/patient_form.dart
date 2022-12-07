@@ -79,13 +79,14 @@ class _PatientFormState extends State<PatientForm> {
                                       child: SafeArea(
                                         top: false,
                                         child: CupertinoDatePicker(
-                                          initialDateTime: date,
-                                          mode: CupertinoDatePickerMode.date,
-                                          onDateTimeChanged:
-                                              (DateTime newDate) {
-                                            setState(() => date = newDate);
-                                          },
-                                        ),
+                                            initialDateTime: date,
+                                            mode: CupertinoDatePickerMode.date,
+                                            onDateTimeChanged:
+                                                (DateTime newDate) {
+                                              setState(() => date = newDate);
+                                            },
+                                            minimumYear: 1900,
+                                            maximumDate: DateTime.now()),
                                       ),
                                     )),
                             child:
