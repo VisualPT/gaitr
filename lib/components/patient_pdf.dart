@@ -100,31 +100,59 @@ class PatientPdf {
                             text:
                                 "A distance of 10 meters is measured over a level surface with 2 meters for acceleration and 2 meters for deceleration.")),
                     Spacer(flex: 2),
-                    RichText(
-                        text: TextSpan(children: [
-                      TextSpan(text: "Sampled on: ", style: detail),
-                      TextSpan(text: patientData.date, style: detailBold),
-                      TextSpan(text: " at ", style: detail),
-                      TextSpan(text: patientData.time, style: detailBold),
-                    ])),
+                    SizedBox(
+                        height: 0.65 * inch,
+                        child: Row(children: [
+                          Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                RichText(
+                                  text: TextSpan(children: [
+                                    TextSpan(
+                                        text: "Patient Name: ", style: detail),
+                                    TextSpan(
+                                        text:
+                                            "${patientData.firstname} ${patientData.lastname}",
+                                        style: detailBold),
+                                  ]),
+                                ),
+                                Spacer(),
+                                RichText(
+                                  text: TextSpan(children: [
+                                    TextSpan(
+                                        text: "Birth Date: ", style: detail),
+                                    TextSpan(
+                                        text: patientData.bday,
+                                        style: detailBold),
+                                  ]),
+                                ),
+                              ]),
+                          Spacer(),
+                          Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                RichText(
+                                    text: TextSpan(children: [
+                                  TextSpan(text: "Date: ", style: detail),
+                                  TextSpan(
+                                      text: patientData.date,
+                                      style: detailBold),
+                                ])),
+                                Spacer(),
+                                RichText(
+                                    text: TextSpan(children: [
+                                  TextSpan(text: "Time: ", style: detail),
+                                  TextSpan(
+                                      text: patientData.time,
+                                      style: detailBold),
+                                ])),
+                              ]),
+                        ])),
                     Spacer(),
                     RichText(
                       text: TextSpan(children: [
-                        TextSpan(text: "Patient Name: ", style: detail),
-                        TextSpan(
-                            text:
-                                "${patientData.firstname} ${patientData.lastname}",
-                            style: detailBold),
-                      ]),
-                    ),
-                    Spacer(),
-                    RichText(
-                      text: TextSpan(children: [
-                        TextSpan(text: "Birth Date: ", style: detail),
-                        TextSpan(text: patientData.bday, style: detailBold),
-                        TextSpan(text: " (", style: detail),
+                        TextSpan(text: "Age: ", style: detail),
                         TextSpan(text: patientData.age, style: detailBold),
-                        TextSpan(text: " y/o)", style: detail),
                       ]),
                     ),
                     Spacer(),
@@ -229,6 +257,16 @@ class PatientPdf {
               ),
             ),
             Spacer(),
+            Center(
+              child: RichText(
+                textAlign: TextAlign.center,
+                text: TextSpan(
+                  style: detailBold,
+                  text: getComparisonMessage(double.parse(patientData.velocity),
+                      patientData.isMale, int.parse(patientData.age)),
+                ),
+              ),
+            ),
             Spacer(flex: 4),
             Footer(
               padding: EdgeInsets.zero,
@@ -286,4 +324,16 @@ class PatientPdf {
 
   double positioner(String velocity) =>
       (3.43 * inch * double.parse(velocity)).clamp(0 * inch, 5.75 * inch);
+}
+
+String getComparisonMessage(double velocity, bool isMale, int age) {
+  double percent =
+      AgeGenderNorms.getPercentDifferenceFromNorm(velocity, isMale, age);
+  int _index = (age / 10).round();
+  String speedComparison = percent > 0 ? "faster" : "slower";
+  String ageRange =
+      _index > 8 ? "80+" : "${_index.toString()}0 - ${_index.toString()}9";
+  return percent.abs() > 5.0
+      ? "Among people aged $ageRange, you are ${percent.abs()}% $speedComparison than your peer group."
+      : "Your gait velocity matches your peer group aged $ageRange.";
 }

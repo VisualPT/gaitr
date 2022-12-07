@@ -120,26 +120,30 @@ class _PatientFormState extends State<PatientForm> {
                                   children: [
                                     Container(
                                       padding: const EdgeInsets.all(1.0),
-                                      decoration: BoxDecoration(
-                                          border: Border.all(),
-                                          borderRadius:
-                                              BorderRadius.circular(8.0),
-                                          color: patientData.isMale
-                                              ? AppStyles.brandTertiaryOrange
-                                              : AppStyles.transparent),
+                                      decoration: patientData.isMale
+                                          ? BoxDecoration(
+                                              border: Border.all(),
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
+                                              color: AppStyles
+                                                  .brandTertiaryOrange
+                                                  .withOpacity(0.5))
+                                          : null,
                                       child: const Text("Male",
                                           style: AppStyles.inputTextStyle),
                                     ),
                                     const Text("/   "),
                                     Container(
                                       padding: const EdgeInsets.all(1.0),
-                                      decoration: BoxDecoration(
-                                          border: Border.all(),
-                                          borderRadius:
-                                              BorderRadius.circular(8.0),
-                                          color: patientData.isMale
-                                              ? AppStyles.transparent
-                                              : AppStyles.brandTertiaryOrange),
+                                      decoration: !patientData.isMale
+                                          ? BoxDecoration(
+                                              border: Border.all(),
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
+                                              color: AppStyles
+                                                  .brandTertiaryOrange
+                                                  .withOpacity(0.5))
+                                          : null,
                                       child: const Text("Female",
                                           style: AppStyles.inputTextStyle),
                                     )
