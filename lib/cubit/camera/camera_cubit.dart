@@ -40,8 +40,6 @@ class CameraCubit extends Cubit<CameraState> {
       await cameraController.initialize();
       await cameraController
           .lockCaptureOrientation(DeviceOrientation.landscapeLeft);
-      //TODO waiting for issue fix: await cameraController.prepareForVideoRecording();
-
       emit(CameraStandby(controller: cameraController));
     } catch (e) {
       emit(CameraError(exception: Exception(e.toString())));
@@ -73,9 +71,9 @@ class CameraCubit extends Cubit<CameraState> {
     emit(CameraLoading());
     initCamera();
   }
+  //TODO build robust videocamera widget using methods below
 }
 
-//TODO build robust videocamera widget using methods below
   // @override
   // void initState() {
   //   super.initState();

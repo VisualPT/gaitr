@@ -138,7 +138,16 @@ class _PdfPageState extends State<PdfPage> {
                   );
                 } else if (state is PdfError) {
                   return Center(
-                    child: Text(state.exception.toString()),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(state.exception.toString()),
+                        CupertinoButton(
+                            child: const Text("Retry"),
+                            onPressed: () => BlocProvider.of<PdfCubit>(context)
+                                .initPDFView())
+                      ],
+                    ),
                   );
                 } else {
                   return const Center(

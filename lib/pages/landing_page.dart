@@ -74,7 +74,7 @@ class _LandingPageState extends State<LandingPage> {
 
   List<Widget> measurementMethodToggle() {
     return [
-      const Text('Choose preferred measurement method',
+      const Text('Choose measurement method',
           style: AppStyles.inputPromptStyle),
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
