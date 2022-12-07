@@ -85,7 +85,7 @@ class PatientPdf {
                   text: TextSpan(
                     children: [
                       TextSpan(
-                          text: "Gait Velocity Test & Report", style: header),
+                          text: "Gait Velocity Analysis", style: header),
                     ],
                   ),
                   overflow: TextOverflow.span),
