@@ -10,6 +10,7 @@ import 'package:gaitr/pages/pages.dart';
 void main() {
   runApp(const Root());
 }
+//TODO Re-add Amplify
 //TODO add 10 feet option
 //TODO 5-15 videos for each age group
 
