@@ -1,4 +1,6 @@
-# Gaitr - gait velocity detection
+# Gaitr - gait velocity detection (DEPRECATED) 
+
+## See the new [organization](https://github.com/VisualPT) spun out from this prototype
 
 Healthcare tool for improving therapist experience.
 
