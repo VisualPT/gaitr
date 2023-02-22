@@ -1,8 +1,0 @@
-type Patient @model @auth(rules: [{allow: public}]) {
-  id: ID!
-  velocity: Float
-  age: Int
-  duration: Float
-  datetime: AWSDateTime
-}
- 

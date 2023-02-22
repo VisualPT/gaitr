@@ -18,7 +18,7 @@ Future<void> configureAmplify() async {
   try {
     await Amplify.addPlugins(
         [_dataStorePlugin, _apiPlugin, _authPlugin, _storagePlugin]);
-    await Amplify.configure(amplifyconfig);
+    await Amplify.configure(amplifyconfig); //Removed Cloud Services
   } catch (e) {
     log('An error occurred while configuring Amplify: $e');
   }

@@ -9,7 +9,7 @@ import 'package:amplify_flutter/amplify_flutter.dart';
 import 'package:amplify_storage_s3/amplify_storage_s3.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:gaitr/amplifyconfiguration.dart';
+import 'package:gaitr/amplifyconfiguration.dart'; //Removed Cloud Services
 import 'package:gaitr/models/ModelProvider.dart';
 
 part 'backend_state.dart';
